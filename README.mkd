@@ -1,0 +1,71 @@
+# Background
+
+Genomics requires the use of many computational tools starting from assessing
+the quality of sequenced data and assembly, to annotation, and comparison and
+analyses. But Bioinformatics software are often hard to install. And upgrades
+changes the input/output behaviour, making experiments difficult to reproduce.
+To make matters worse, Genomicists often lack necessary computational training
+to setup complex Bioinformatics software, at times tens of them to compare and
+choose the best for the task at hand.
+
+Easy access to Bioinformatics software is needed:
+  - on personal computer for small tasks
+  - on HPC and fat servers for more computationally intensive tasks, without
+    having to go through sysadmin (which can be very time consuming for most
+    labs)
+  - setup should be reproducible and shareable
+
+# Proposal
+Docker is a new technology that make reproducible setups possible. Docker works
+by creating "to the specification" image from a Dockerfile which are then run
+in an isolated container. Dockerfiles or the resulting images can be persisted
+forever, and shared or published over the Internet, making it possible for
+anybody to recreate the exact same setup at any point of time in the future.
+
+The aim of this project is to make complex Genomics software and even BioLinux!
+available in just one command.
+
+    # terminal 1
+    $ switch biolinux7
+    ... do stuff in biolinux
+
+    # terminal 2
+    $ switch pacbio
+    ... do stuff with pacbio
+
+    # terminal 3 - run a job
+    $ switch maker -genome Si_gnF.fa -cpus 24
+
+To that goal, we will create and distribute through a central repository
+Dockerfiles and resulting images for common Genomics software. The images will
+be tested on Linux and Mac machines, and different HPC clusters.
+
+# Roadmap
+
+## December 15th.
+
+On standard linux host (first Ubuntu 14.04), Biolinux (or similar) running under docker in
+userspace (a small amount of root install is ok; most stuff should be happening in home directory):
+
+ * host OS home directory and other mounts should be mounted in client (biolinux) in the same directories at the host.
+ * user group IDs need to be respected  (for accessing shared dirs...)
+
+Once this works on Ubuntu 14.04, make it work under Centos 7.
+
+## December 31.
+
+Instructions/scripts to make the previous happen easily:
+
+ * setup should be one line - similar to install oh-my-zsh
+ * switch to/from OS should be one line (this should include `cd`-ing within the client to the hosts' `pwd`).
+ * (in github repo)
+
+## Jan15.: same as Dec15 but on MacOS host
+
+Note; have a look at kitematic.
+
+## Jan31.: same as Dec31 but on MacOS host
+
+## Subsequently
+
+Stress-test of specific apps (including Galaxy setup on macbook host), roll-out on Apocrita compute cluster under sci linux 6, usability under SGE queue, appropriate documentation, publication, presentation to project partners, tutorial with example analysis pipelines, test on RAL Jasmincluster (coordinate via Tim Booth & Phil Kershaw), optimise filesystem mounting protocol for huge fragmented datasets, document why Proot is inappropriate...
