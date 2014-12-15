@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+Image = Struct.new :repository, :tag, :id, :created, :size
+
+def images
+  `docker images`.split("\n").drop(1).
+    map{|l| Image.new(*l.split(/\s{2,}/))}
+end
+
+def get(name)
+  repository, tag = name.split(':')
+  repository.gsub!('switch/', '')
+  filtered = images.select {|img| repository && img.repository == repository}
+  return if filtered.empty?
+  return filtered.first if not tag
+  return filtered.find {|img| img.tag == tag}
+end
+
+def exists?(name)
+  !!get(name)
+end
+
+def build(name)
+  repository, tag = name.split(':')
+  system "docker build -t switch/#{name} #{File.join 'Dockerfiles', repository, tag}"
+end
+
+def switch(name)
+  system "docker run -it -v $HOME:$HOME -w $HOME switch/#{name}"
+end
+
+name = ARGV[0]
+build name unless exists? name
+switch name
