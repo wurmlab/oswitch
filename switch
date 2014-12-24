@@ -20,15 +20,43 @@ def exists?(name)
   !!get(name)
 end
 
+def unescape(mount)
+  mount.gsub(/\\040/, " ").gsub(/\\012/, "\n").gsub(/\\134/, "\\").gsub(/\\011/, "\t")
+end
+
+# Parse /proc/mounts for mountpoints
+def getmountpoints
+  mtab = IO.readlines '/proc/mounts'
+  mountpoints = mtab.map{ |line| line.split(/\s+/)[1]}
+  mountpoints.map!{ |mount| unescape(mount) }
+  # Ignore common system mountpoints
+  mountpoints.reject!{ |mount| mount =~ /^\/$/ }
+  mountpoints.reject!{ |mount| mount =~ /^\/(proc|sys|usr|boot|tmp|dev|var|bin|etc|lib).*/ }
+  # Mount /run/media/* but ignore other /run/ mountpoints
+  mountpoints.reject!{ |mount| mount =~ /^\/run.*/ unless mount =~ /^\/run\/(media.*)/ }
+end
+
+def buildargs(mountpoints)
+  args = ""
+  mountpoints.each do |mountpoint|
+    args << "-v \"" << mountpoint << "\"" << ":" << "\"" << mountpoint << "\" "
+  end
+  return args
+end
+
 def build(name)
   repository, tag = name.split(':')
   system "docker build -t switch/#{name} #{File.join 'Dockerfiles', repository, tag}"
 end
 
-def switch(name)
-  system "docker run -it -v $HOME:$HOME -w $HOME switch/#{name}"
+def switch(name, args)
+  cmdline = ""
+  cmdline << "docker run -it -v $HOME:$HOME " << args << "-w $HOME switch/#{name}"
+  system cmdline
 end
 
 name = ARGV[0]
+mountpoints = getmountpoints
+args = buildargs(mountpoints)
 build name unless exists? name
-switch name
+switch(name, args)
