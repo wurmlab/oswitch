@@ -20,20 +20,41 @@ def exists?(name)
   !!get(name)
 end
 
-def unescape(mount)
-  mount.gsub(/\\040/, " ").gsub(/\\012/, "\n").gsub(/\\134/, "\\").gsub(/\\011/, "\t")
+# Linux specific code.
+module Linux
+
+  # Parse /proc/mounts for mountpoints
+  def getmountpoints
+    mtab = IO.readlines '/proc/mounts'
+    mountpoints = mtab.map{ |line| line.split(/\s+/)[1]}
+    mountpoints.map!{ |mount| unescape(mount) }
+    # Ignore common system mountpoints
+    mountpoints.reject!{ |mount| mount =~ /^\/$/ }
+    mountpoints.reject!{ |mount| mount =~ /^\/(proc|sys|usr|boot|tmp|dev|var|bin|etc|lib).*/ }
+    # Mount /run/media/* but ignore other /run/ mountpoints
+    mountpoints.reject!{ |mount| mount =~ /^\/run.*/ unless mount =~ /^\/run\/(media.*)/ }
+  end
+
+  private
+
+  def unescape(mount)
+    mount.gsub(/\\040/, " ").gsub(/\\012/, "\n").gsub(/\\134/, "\\").gsub(/\\011/, "\t")
+  end
 end
 
-# Parse /proc/mounts for mountpoints
-def getmountpoints
-  mtab = IO.readlines '/proc/mounts'
-  mountpoints = mtab.map{ |line| line.split(/\s+/)[1]}
-  mountpoints.map!{ |mount| unescape(mount) }
-  # Ignore common system mountpoints
-  mountpoints.reject!{ |mount| mount =~ /^\/$/ }
-  mountpoints.reject!{ |mount| mount =~ /^\/(proc|sys|usr|boot|tmp|dev|var|bin|etc|lib).*/ }
-  # Mount /run/media/* but ignore other /run/ mountpoints
-  mountpoints.reject!{ |mount| mount =~ /^\/run.*/ unless mount =~ /^\/run\/(media.*)/ }
+# Mac OS X specific code.
+module Darwin
+
+  # TODO:
+  #   1. Since when has Mac OS been putting all volumes in /Volumes?
+  #   2. Does everything mount to /Volumes in Mac? What about an sshfs volume?
+  #   2. Since when has Mac OS been calling the primary partition 'Macintosh HD'?
+  #   3. What would be an appropriate blacklist for Mac?
+  def getmountpoints
+    volumes = Dir['/Volumes/*']
+    # Ignore common system mountpoints
+    volumes.reject!{ |mount| mount =~ /Macintosh HD/ }
+  end
 end
 
 def buildargs(mountpoints)
@@ -53,6 +74,13 @@ def switch(name, args)
   cmdline = ""
   cmdline << "docker run -it -v $HOME:$HOME " << args << "-w $HOME switch/#{name}"
   system cmdline
+end
+
+case RUBY_PLATFORM
+when /linux/
+  include Linux
+when /darwin/
+  include Darwin
 end
 
 name = ARGV[0]
