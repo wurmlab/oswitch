@@ -1,6 +1,7 @@
 # Provides BioLinux 8 on Ubuntu 14.04.1.
 
-FROM ubuntu:14.04.1
+FROM switch/baseimage
+
 MAINTAINER Anurag Priyam <anurag08priyam@gmail.com>
 
 RUN apt-get update && \

@@ -1,0 +1,16 @@
+#! /bin/bash
+
+user=$1; home=$2; shell=$(command -v $3); cwd=$4; shift 4
+
+id -u $user &> /dev/null
+if [ $? -ne 0 ]; then
+  groupadd -f wheel
+  useradd -M -N -g wheel -d $home -s $shell $user
+  passwd -d $user &> /dev/null
+fi
+
+if [ $# -eq 0 ]; then
+  su -l $user -c "[ -d $cwd ] && cd $cwd; exec $shell"
+else
+  su -l $user -c "[ -d $cwd ] && cd $cwd; $*"
+fi

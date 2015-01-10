@@ -1,0 +1,34 @@
+#!/usr/bin/env ruby
+
+require 'switch'
+require 'optparse'
+
+optspec = OptionParser.new do |opts|
+  opts.banner = "Usage: switch [options] <package> [cmd]"
+
+  opts.on('-l', '--list', 'List packages.') do
+    puts Switch.packages
+    exit
+  end
+
+  opts.on("-h", "--help", "Print help.") do
+    puts opts
+    exit
+  end
+end
+
+begin
+  optspec.order!
+rescue OptionParser::InvalidOption => e
+  puts e
+  exit
+end
+
+if ARGV.empty?
+  puts optspec
+  exit
+end
+
+package = ARGV[0]
+command = ARGV[1..-1]
+Switch.to(package, command)
