@@ -16,6 +16,7 @@ Easy access to Bioinformatics software is needed:
   - setup should be reproducible and shareable
 
 # Proposal
+
 Docker is a new technology that make reproducible setups possible. Docker works
 by creating "to the specification" image from a Dockerfile which are then run
 in an isolated container. Dockerfiles or the resulting images can be persisted
@@ -25,44 +26,66 @@ anybody to recreate the exact same setup at any point of time in the future.
 The aim of this project is to make complex Genomics software and even BioLinux!
 available in just one command.
 
-    # terminal 1
-    $ switch biolinux7
-    ... do stuff in biolinux
+# Status
 
-    # terminal 2
-    $ switch pacbio
-    ... do stuff with pacbio
+After switch has been installed:
 
-    # terminal 3 - run a job
-    $ switch maker -genome Si_gnF.fa -cpus 24
+    # list available packages
+    switch -l
 
-To that goal, we will create and distribute through a central repository
-Dockerfiles and resulting images for common Genomics software. The images will
-be tested on Linux and Mac machines, and different HPC clusters.
+    # switch to BioLinux
+    switch biolinux
+
+    # run a command in BioLinux
+    switch biolinux bwa ...
+
+Switch runs the specified package within a docker container.  Processes are run
+in the container as the same user name, the same home directory, the same login
+shell and the same working directory as on the host. Volumes (external drives,
+NAS) mounted on the host are available in the container at the path.
+
+Using switch is just like opening a new terminal tab, except:
+- while user name is preserved, the user id need not be the same. This doesn't
+  affect file permissions on mounted volumes though.
+- login shell will be preserved only if it's one of bash/zsh/fish on the host.
+  If not, bash will be used.
+- current working directory will be preserved only if that path exists in the
+  container. If not, home directory will be used.
+
+One can obtain shell access to the container, or directly run a command
+available in the container. In the latter case the container terminates
+automatically once the command has been executed, output is printed to
+the terminal or can be redirected.
+
+We have tested this already on Ubuntu 14.04 and Mac OS X Yosemite.
+
+# Installation
+
+TODO
 
 # Roadmap
 
-## December 15th.
+## ~~December 15th.~~
 
-On standard linux host (first Ubuntu 14.04), Biolinux (or similar) running under docker in
-userspace (a small amount of root install is ok; most stuff should be happening in home directory):
+~~On standard linux host (first Ubuntu 14.04), Biolinux (or similar) running under docker in
+userspace (a small amount of root install is ok; most stuff should be happening in home directory):~~
 
- * host OS home directory and other mounts should be mounted in client (biolinux) in the same directories at the host.
- * user group IDs need to be respected  (for accessing shared dirs...)
+ * ~~host OS home directory and other mounts should be mounted in client (biolinux) in the same directories at the host.~~
+ * ~~user group IDs need to be respected  (for accessing shared dirs...)~~
 
-Once this works on Ubuntu 14.04, make it work under Centos 7.
+~~Once this works on Ubuntu 14.04, make it work under Centos 7.~~
 
 ## December 31.
 
 Instructions/scripts to make the previous happen easily:
 
  * setup should be one line - similar to install oh-my-zsh
- * switch to/from OS should be one line (this should include `cd`-ing within the client to the hosts' `pwd`).
- * (in github repo)
+ * ~~switch to/from OS should be one line (this should include `cd`-ing within the client to the hosts' `pwd`).~~
+ * ~~(in github repo)~~
 
-## Jan15.: same as Dec15 but on MacOS host
+## ~~Jan15.: same as Dec15 but on MacOS host~~
 
-Note; have a look at kitematic.
+~~Note; have a look at kitematic.~~
 
 ## Jan31.: same as Dec31 but on MacOS host
 
