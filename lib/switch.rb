@@ -1,3 +1,5 @@
+require 'timeout'
+
 # Switch leverages docker to provide access to complex Bioinformatics software
 # (even Biolinux!) in just one command.
 #
@@ -18,6 +20,16 @@ class Switch
       "Recipe to run #@name not available."
     end
   end
+
+  class ENODKR < StandardError
+
+    def to_s
+      "***** Docker not installed / correctly setup / running.
+      Are you able to run 'docker info'?"
+    end
+  end
+
+  include Timeout
 
   # Captures a docker image.
   Image = Struct.new :repository, :tag, :id, :created, :size
@@ -149,8 +161,8 @@ class Switch
   #   Doesn't really exec. Our ruby proecess waits till docker process started
   #   has been terminated.
   def exec
-    build and switch
-  rescue ENOPKG => e
+    ping and build and switch
+  rescue ENODKR, ENOPKG => e
     puts e
     exit
   end
@@ -167,6 +179,11 @@ class Switch
     raise ENOPKG, package unless srcpath
     return true if Image.exists? imgname
     build_baseimage and system "docker build -t #{imgname} #{srcpath}"
+  end
+
+  # Ping docker daemon. Raise error if no response within 10s.
+  def ping
+    timeout(5, ENODKR) { system 'docker info &> /dev/null' } or raise ENODKR
   end
 
   def srcpath
