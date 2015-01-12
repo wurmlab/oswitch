@@ -57,12 +57,59 @@ available in the container. In the latter case the container terminates
 automatically once the command has been executed, output is printed to
 the terminal or can be redirected.
 
-We have tested this already on Ubuntu 14.04 and Mac OS X Yosemite.
+We have tested switch on Mac OS X Yosemite, Ubuntu 14.04.1, CentOS 7.
 
 # Installation
 
-TODO
+## Install and setup docker
 
+### Mac OS X
+
+Installing docker - https://docs.docker.com/installation/mac/
+
+### Ubuntu
+
+Installing docker - https://docs.docker.com/installation/ubuntulinux/
+
+Add yourself to docker group so you can run docker client without sudo:
+
+    $ sudo usermod -aG docker `whoami`
+    
+    # then logout and login again for the above command to take effect
+
+### CentOS
+
+Installing docker - https://docs.docker.com/installation/centos/
+
+Add yourself to docker group so you can run docker client without sudo:
+
+    $ sudo usermod -aG docker `whoami`
+    
+    # then logout and login again for the above command to take effect
+
+Disable SELinux as it gets in the way of mounting volumes within the container:
+
+    $ sed -i .bak 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
+
+    # then reboot your system
+
+The above command backs up the original file to `/etc/selinux/config.bak`. If
+you are concerned about disabling SELinux, do note that we are trying to work
+out a better solution.
+
+---
+
+## Install and use switch
+
+    $ git clone https://github.com/yeban/switch
+    $ cd switch
+    $ gem install bundler && bundle
+    $ bundle exec bin/switch biolinux
+
+Obtaining BioLinux can take long. You may quickly want to test switch's
+featureset using our docker baseimage, which is essentially Ubuntu 14.04.1.
+
+    $ bundle exec bin/switch baseimage
 # Roadmap
 
 ## ~~December 15th.~~
