@@ -97,6 +97,12 @@ The above command backs up the original file to `/etc/selinux/config.bak`. If
 you are concerned about disabling SELinux, do note that we are trying to work
 out a better solution.
 
+## Test that docker is correctly installed
+
+The following should give an encouraging message: 
+
+    $ docker run hello-world
+
 ---
 
 ## Install and use switch
