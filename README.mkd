@@ -116,32 +116,9 @@ Obtaining BioLinux can take long. You may quickly want to test switch's
 featureset using our docker baseimage, which is essentially Ubuntu 14.04.1.
 
     $ bundle exec bin/switch baseimage
+
 # Roadmap
 
-## ~~December 15th.~~
-
-~~On standard linux host (first Ubuntu 14.04), Biolinux (or similar) running under docker in
-userspace (a small amount of root install is ok; most stuff should be happening in home directory):~~
-
- * ~~host OS home directory and other mounts should be mounted in client (biolinux) in the same directories at the host.~~
- * ~~user group IDs need to be respected  (for accessing shared dirs...)~~
-
-~~Once this works on Ubuntu 14.04, make it work under Centos 7.~~
-
-## December 31.
-
-Instructions/scripts to make the previous happen easily:
-
- * setup should be one line - similar to install oh-my-zsh
- * ~~switch to/from OS should be one line (this should include `cd`-ing within the client to the hosts' `pwd`).~~
- * ~~(in github repo)~~
-
-## ~~Jan15.: same as Dec15 but on MacOS host~~
-
-~~Note; have a look at kitematic.~~
-
-## Jan31.: same as Dec31 but on MacOS host
-
-## Subsequently
-
-Stress-test of specific apps (including Galaxy setup on macbook host), roll-out on Apocrita compute cluster under sci linux 6, usability under SGE queue, appropriate documentation, publication, presentation to project partners, tutorial with example analysis pipelines, test on RAL Jasmincluster (coordinate via Tim Booth & Phil Kershaw), optimise filesystem mounting protocol for huge fragmented datasets, document why Proot is inappropriate...
+* stress test against various use cases
+* more usage examples
+* brew recipe for Mac
