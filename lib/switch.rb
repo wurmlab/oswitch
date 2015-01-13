@@ -91,19 +91,19 @@ class Switch
   # Mac OS X specific code.
   module Darwin
 
-    # Read volumes mounted on the host from /Volumes.
-    #
-    # TODO:
-    #   1. Since when has Mac OS been putting all volumes in /Volumes?
-    #   2. Does everything mount to /Volumes in Mac? What about an sshfs volume?
-    #   2. Since when has Mac OS been calling the primary partition 'Macintosh HD'?
-    #   3. What would be an appropriate blacklist for Mac?
-    def mountpoints
-      volumes = Dir['/Volumes/*']
-      # Ignore common system mountpoints.
-      volumes.reject! {|mount| mount =~ /Macintosh HD/}
+    BLACKLIST =
+      %r{
+    (^/$)|
+      ^/(bin|cores|dev|etc|home|Incompatible\ Software|
+         installer\.failurerequests|lost\+found|net|
+         Network|opt|private|sbin|System|Users|tmp|
+         usr|var|Volumes$)
+      }x
 
-      # Add home dir.
+    def mountpoints
+      volumes = Dir['/Volumes/*'].map {|v| File.symlink?(v) ? File.readlink(v) : v}
+      volumes = volumes | Dir['/*']
+      volumes.reject! { |mount| mount =~ BLACKLIST }
       volumes << home
     end
   end
