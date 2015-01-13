@@ -9,7 +9,7 @@ RUN echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf && \
     apt-get clean && \
     locale-gen en_US.UTF-8
 
-ENV LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
 
 COPY wheel /etc/sudoers.d/
 COPY _init /usr/local/bin/
