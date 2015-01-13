@@ -31,7 +31,7 @@ class Switch
 
   include Timeout
 
-  # Captures a docker image.
+  # Captures a docker image's metadata.
   Image = Struct.new :repository, :tag, :id, :created, :size
 
   class Image
@@ -147,9 +147,7 @@ class Switch
     # images on the user's system. It must be noted though that other program
     # may use the same prefix, and thus our images aren't truly isolated.
     @imgname = "switch/#{@package.gsub('_', ':')}"
-    # We don't give up the pid untill docker completes. Thus appending pid to
-    # the package name gurantees us a unique container name. If we were using
-    # exec or fork, we would have to worry about pids being recycled.
+
     @cntname = "#@package-#{Process.pid}"
 
     exec
@@ -157,9 +155,6 @@ class Switch
 
   attr_reader :package, :command, :imgname, :cntname
 
-  # NOTE:
-  #   Doesn't really exec. Our ruby proecess waits till docker process started
-  #   has been terminated.
   def exec
     ping and build and switch
   rescue ENODKR, ENOPKG => e
@@ -172,7 +167,7 @@ class Switch
   def switch
     cmdline = "docker run --name #{cntname} --hostname #{cntname} -it --rm=true" \
       " #{mountargs} #{imgname} #{userargs} #{command}"
-    system cmdline
+    Kernel.exec cmdline
   end
 
   def build

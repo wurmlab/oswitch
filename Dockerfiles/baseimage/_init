@@ -14,8 +14,9 @@ if [ $? -ne 0 ]; then
   passwd -d $user &> /dev/null
 fi
 
-if [ $# -eq 0 ]; then
-  su -l $user -s $shell -c "[ -d $cwd ] && cd $cwd; exec $shell"
-else
-  su -l $user -s $shell -c "[ -d $cwd ] && cd $cwd; $*"
-fi
+exec sudo -u $user -i exec $shell -c \
+"
+  [ -d $cwd  ] && cd $cwd;
+  [ $# -gt 0 ] && exec $*;
+  exec $shell;
+"
