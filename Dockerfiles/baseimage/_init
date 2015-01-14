@@ -1,11 +1,11 @@
 #! /bin/bash
 
-if [ $# -lt 4 ]; then
-  echo "Usage: ... <username> <homedir> <shell:bash|zsh|fish> <pwd>"
+if [ $# -lt 5 ]; then
+  echo "Usage: ... <username> <homedir> <shell:bash|zsh|fish> <pwd> <motd>"
   exit
 fi
 
-user=$1; home=$2; shell=$(command -v $3); cwd=$4; shift 4
+user=$1; home=$2; shell=$(command -v $3); cwd=$4; motd=$5; shift 5
 
 id -u $user &> /dev/null
 if [ $? -ne 0 ]; then
@@ -18,5 +18,6 @@ exec sudo -u $user -i exec $shell -c \
 "
   [ -d $cwd  ] && cd $cwd;
   [ $# -gt 0 ] && exec $*;
+  echo $(printf %q "$motd");
   exec $shell;
 "

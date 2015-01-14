@@ -1,4 +1,6 @@
 require 'timeout'
+require 'colorize'
+require 'shellwords'
 
 # Switch leverages docker to provide access to complex Bioinformatics software
 # (even Biolinux!) in just one command.
@@ -166,7 +168,7 @@ class Switch
 
   def switch
     cmdline = "docker run --name #{cntname} --hostname #{cntname} -it --rm=true" \
-      " #{mountargs} #{imgname} #{userargs} #{command}"
+      " #{mountargs} #{imgname} #{userargs} #{motd} #{command}"
     Kernel.exec cmdline
   end
 
@@ -208,6 +210,26 @@ class Switch
 
   def cwd
     Dir.pwd
+  end
+
+  def motd
+    str =<<MOTD
+################################################################################
+You are now running: #{package}, in container: #{cntname}.
+
+Container is distinct from the shell your launched this container from. Changes
+you make here will be lost unless it's made to one of the directories below:
+
+ - #{mountpoints.join("\n - ")}
+
+It's possible you may not be able to write to one or more directories above,
+but it should be possible to read data from all. Home directory is often the
+safest to write to.
+
+Press Ctrl-D or type 'exit' to go back.
+################################################################################
+MOTD
+    str.blue.shellescape
   end
 
   def mountargs

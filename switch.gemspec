@@ -13,6 +13,9 @@ Makes available complex Genomics software (even BioLinux!) in just one command.
 The setup is guaranteed to be reproducible and shareable.
 DESC
 
+  # dependencies
+  s.add_dependency('colorize',    '~> 0.7.5')
+
   # gem
   s.files         = Dir['lib/**/*'] + Dir['Dockerfiles/**/*']
   s.files         = s.files + ['Gemfile', 'switch.gemspec']
