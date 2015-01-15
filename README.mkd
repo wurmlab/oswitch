@@ -15,7 +15,7 @@ Easy access to Bioinformatics software is needed:
     labs)
   - setup should be reproducible and shareable
 
-# Proposal
+# Aim
 
 Docker is a new technology that make reproducible setups possible. Docker works
 by creating "to the specification" image from a Dockerfile which are then run
@@ -36,8 +36,9 @@ After switch has been installed:
     # switch to BioLinux
     switch biolinux
 
-    # run a command in BioLinux
-    switch biolinux bwa ...
+    # Run a command in BioLinux
+    echo 'MNTLWLSLWDYPGKLPLNFMVFDTKDDLQAAYWRDPYSIPLAVIFEDPQPISQRLIYEIRTNPSYTLPPPPTKLYSAPISCRKNKTGHWMDDILSIKTGESCPVNNYLHSGFLALQMITDITKIKLENSDVTIPDIKLIMFPKEPYTADWMLAFRVVIPLYMVLALSQFITYLLILIVGEKENKIKEGMKMMGLNDSVF' > query.fa
+    switch biolinux blastp -remote -html -db nr -query query.fa > result.html
 
 Switch runs the specified package within a docker container.  Processes are run
 in the container as the same user name, the same home directory, the same login
@@ -55,7 +56,8 @@ Using switch is just like opening a new terminal tab, except:
 One can obtain shell access to the container, or directly run a command
 available in the container. In the latter case the container terminates
 automatically once the command has been executed, output is printed to
-the terminal or can be redirected.
+the terminal and can be redirected, and returns the exit status of the
+the command run within container.
 
 We have tested switch on Mac OS X Yosemite, Ubuntu 14.04.1, CentOS 7.
 
@@ -120,5 +122,4 @@ featureset using our docker baseimage, which is essentially Ubuntu 14.04.1.
 # Roadmap
 
 * stress test against various use cases
-* more usage examples
 * brew recipe for Mac
