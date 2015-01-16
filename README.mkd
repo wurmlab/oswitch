@@ -23,7 +23,7 @@ installation requests & the challenges of managing multiple versions.
 
 ## Aim & Features
 
-We are developing `switch` to make it easy to enable **seamless switching
+We are developing `switch` to enable **seamless switching
 from one operating system to another** - providing access to diverse
 ranges of tools. This project grew from our own need to rapidly access
 software distributed as part of
@@ -141,6 +141,7 @@ Switch ships with BioLinux 8. More containers will be added later.
 ```shell
 pixel:~ $ switch -l
 biolinux_8
+ubuntu
 ```
 	
 ##### Availability
