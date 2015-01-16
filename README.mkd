@@ -64,6 +64,19 @@ use.
 
 ##### Use a package interactively in a normal command-line
 
+Minimalist example:
+
+```shell
+Yannick@n56-169 ~/g/switch> uname -a
+Darwin n56-169.sbcs.qmul.ac.uk 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
+Yannick@n56-169 ~/g/switch> bundle exec bin/switch biolinux_8 
+### You are now running: biolinux_8, in container: biolinux_8-27182. ###
+Yannick@biolinux_8-27182 ~/g/switch> uname -a
+Linux biolinux_8-27182 3.16.4-tinycore64 #1 SMP Thu Oct 23 16:14:24 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
+```
+
+Biologically relevant example:
+
 ```shell
 # Trying to run blast.
 pixel:~/test/ $ ls 
