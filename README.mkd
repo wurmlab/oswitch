@@ -247,6 +247,7 @@ SELinux entirely
 * Anurag Priyam - [a.priyam@qmul.ac.uk](mailto:a.priyam@qmul.ac.uk) | [@yeban](//twitter.com/yeban)
 * [Bruno Vieira](https://github.com/bmpvieira) ([@bmpvieira](//twitter.com/bmpvieira))
 * [Saurabh Kumar](https://github.com/sa1)
+* Richard Nichols - [http://www.sbcs.qmul.ac.uk/staff/richardnichols.html](http://www.sbcs.qmul.ac.uk/staff/richardnichols.html) | [@qmwugbt112](//twitter.com/qmwugbt112)
 * Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) |
   [@yannick__](//twitter.com/yannick__)
 
