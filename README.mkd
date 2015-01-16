@@ -1,91 +1,159 @@
+# Switch
+
+One-line access to other operating systems.
+
+* [Usage](#example-usage)
+* [Installation](#installation)
+* [Roadmap](#roadmap)
+* [Contributors & Funding](#contributors-&-funding)
+
 ## Background
 
-Genomics requires the use of many computational tools starting from assessing
-the quality of sequenced data and assembly, to annotation, and comparison and
-analyses. But Bioinformatics software are often hard to install. And upgrades
-change the input/output behavior, making experiments difficult to reproduce.
-To make matters worse, Genomicists often lack necessary computational training
-to setup complex Bioinformatics software, at times tens of them to compare and
-choose the best for the task at hand.
+Genomic analyses require using many bioinformatics tools starting from assessing
+the quality of sequenced data and assembly, to annotation, comparison and
+analysis. The data types are young, thus the tools are too and many
+genomicists lack computational training. Thus tools are frequently
+updated yet often challenging to install. Furthermore, software updates often
+involve changes in algorithms or input/output formats, making analyses
+difficult to reproduce. To make matters worse, genomicists often lack
+the skills necessary to setup complex bioinformatics software, and
+systems administrators can be overwhelmed by large numbers of software
+installation requests & the challenges of managing multiple versions.
 
-Easy access to Bioinformatics software is needed:
-  - on personal computer for small tasks
-  - on HPC and fat servers for more computationally intensive tasks
-  - setup should be reproducible and shareable
 
-## Aim
+## Aim & Features
 
-[Docker](http://docker.io/) is a new technology that makes reproducible setups
-possible. Docker works by creating "to the specification" image from a
-Dockerfile, which is then run in an isolated container. Dockerfiles or the
-resulting images can be persisted forever, and shared or published over the
-Internet, making it possible for anybody to recreate the exact same setup at
-any point of time in the future.
+We are developing `switch` to make it easy to enable **seamless switching
+from one operating system to another** - providing access to diverse
+ranges of tools. This project grew from our own need to rapidly access
+software distributed as part of
+[BioLinux](http://environmentalomics.org/bio-linux/) on our MacBooks
+and our university HPC system.
 
-The aim of this project is to make complex Genomics software (even BioLinux!)
-available alongside user's data in just one command by leveraging docker.
+For this we take advantage of the [docker](http://docker.io/)
+technology. Docker works by creating "to the specification" image from
+a Dockerfile, which is then run in an isolated
+"container". Dockerfiles or the resulting images can persist forever,
+are easily [shared or published](https://hub.docker.com/), and make
+it possible for anybody to recreate the exact same setup at
+any point of time in the future. This is similar to using virtual
+machine images - but much more
+[flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
 
-## Status
 
-##### See what packages are available
+`switch` is thus a wrapper facilitating access to docker
+images (without the need for ssh-ing).  Importantly, when switching
+operating systems inside a shell, most things remain unchanged:
 
-    pixel:~ ➜ switch -l
-    biolinux_8
+* Current working directory is maintained
+* User name is maintained
+* Login shell (bash/zsh/fish) is maintained
+* Home directory is maintained (thus all .dotfiles and config files
+  are maintained). 
+* read/write permissions are maintained
 
-Switch ships with BioLinux 8. More packages will be added later.
+* Paths are maintained whenever possible. Thus volumes (external drives,
+NAS) mounted on the host are available in the container at the same
+path.
 
-##### Use a package interactively
 
-    # Trying to run BLAST.
-    pixel:~/biodb/proteins/Solenopsis_invicta ➜ cat query.fa
-    MNTLWLSLWDYPGKLPLNFMVFDTKDDLQAAYWRDPYSIPLAVIFEDPQPISQRLIYEIR
-    TNPSYTLPPPPTKLYSAPISCRKNKTGHWMDDILSIKTGESCPVNNYLHSGFLALQMITD
-    ITKIKLENSDVTIPDIKLIMFPKEPYTADWMLAFRVVIPLYMVLALSQFITYLLILIVGE
-    KENKIKEGMKMMGLNDSVF
-    pixel:~/biodb/proteins/Solenopsis_invicta ➜ blastp -html -query query.fa -db Sinvicta2-2-3.prot.subset.fasta > result.html
-    zsh: command not found: blastp
+## Example Usage
 
-    # BLAST not installed. Quicly switch to BioLinux and run BLAST.
-    pixel:~/biodb/proteins/Solenopsis_invicta ➜ switch biolinux
-    biolinux-7187:~/biodb/proteins/Solenopsis_invicta ➜ blastp -html -query query.fa -db Sinvicta2-2-3.prot.subset.fasta > result.html
-    biolinux-7187:~/biodb/proteins/Solenopsis_invicta ➜ exit
+There are two broad usage scenarios: interactive use & non-interactive
+use.
 
-    # View the result.
-    pixel:~/biodb/proteins/Solenopsis_invicta ➜ google-chrome result.html
+##### Use a package interactively in a normal command-line
 
-The specified package is run in a docker container.  Processes are run in the
-container with the same user name, the same home directory, the same login
-shell and the same working directory as on the host. Volumes (external drives,
-NAS) mounted on the host are available in the container at the same path.
+```shell
+# Trying to run blast.
+pixel:~/test/ $ ls 
+mygene.fasta
+pixel:~/test/ $ cat mygene.fa
+>myfavoritegene isthisone
+MNTLWLSLWDYPGKLPLNFMVFDTKDDLQAAYWRDPYSIPLAVIFEDPQPISQRLIYEIR
+TNPSYTLPPPPTKLYSAPISCRKNKTGHWMDDILSIKTGESCPVNNYLHSGFLALQMITD
+ITKIKLENSDVTIPDIKLIMFPKEPYTADWMLAFRVVIPLYMVLALSQFITYLLILIVGE
+KENKIKEGMKMMGLNDSVF
+pixel:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 > mygene_blastp_nr.tab
+zsh: command not found: blastp
+# Indeed... blastp is not installed on my MacBook. 
+
+# Switch to BioLinux and run blastp.
+pixel:~/test/ $ switch biolinux
+###### You are now running: biolinux in container biolinux-7187. ######
+biolinux-7187:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 >  mygene_blastp_nr.tab
+# BioLinux includes blastp, thus the command ran smoothly.
+
+# View the result.
+biolinux-7187:~/test/ $ head mygene_blastp_nr.tab
+# BLASTP 2.2.28+
+# Query: myfavoritegene isthisone
+# RID: BJAHAHU9015
+# Database: nr
+# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
+# 501 hits found
+myfavoritegene	gi|322796550|gb|EFZ19024.1|	100.00	199	0	0	1	199	1	199	2e-142	 407
+myfavoritegene	gi|307183032|gb|EFN69988.1|	86.07	201	25	2	1	199	80	279	6e-115	 361
+myfavoritegene	gi|572260155|ref|XP_006608402.1|	80.60	201	36	2	1	199	95	294	4e-108	 350
+myfavoritegene	gi|328778864|ref|XP_397465.4|	80.60	201	36	2	1	199	95	294	5e-108	 350
+
+
+# [... potentially run other analyses that require biolinux things...]
+
+# Return to normal operating system
+biolinux-7187:~/test/ $ exit
+pixel:~/test/ $ ls 
+mygene.fasta mygene_blastp_nr.txt
+```
 
 ##### Use a package non-interactively
 
-One can obtain shell access to the container for interactive access as in the
-example above, or directly run a command available in the container. In the
-latter case the container terminates automatically once the command has been
-executed, output is printed to the terminal and can be redirected, and returns
-the exit status of the command run within container.
+Alternatively, single commands can be run directly in a container
+(e.g. BioLinux) without entering it interactively. This can
+be useful to test new tools, or to run a single piece of
+not-locally-installed software as part of a single command. The
+container terminates automatically once the command has been
+executed, output is printed to the terminal and can be redirected, and
+the exit status of the command run within container is returned.
 
-    # Run command directly in BioLinux and view results if success.
-    pixel:~/biodb/proteins/Solenopsis_invicta ➜ switch biolinux blastp -remote \
-      -html -query query.fa -db nr > result.html && google-chrome result.html
+```shell
+# Run command directly in BioLinux and view results if success.
+pixel:~/test/ $  switch biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
+```
 
+##### Listing available operating system containers
+
+Switch ships with BioLinux 8. More containers will be added later.
+
+```shell
+pixel:~ $ switch -l
+biolinux_8
+```
+	
 ##### Availability
+
 Switch has been tested on:
+
 * Mac OS X Yosemite
 * Ubuntu 14.04.1
 * CentOS 7
 
 ##### Caveats
-* While user name is preserved, the user id need not be the same. This doesn't
-  affect file permissions on mounted volumes though.
-* Login shell will be preserved only if it's one of bash/zsh/fish on the host.
-  If not, bash will be used.
+
+* Username is preserved, but userid may change. This does not
+  affect file permissions on mounted volumes.
+* Currently only bash/zsh/fish login shells are preserved. If host
+  uses a different shell, bash will be used within the container.
+* Host directories/volumes with paths conflicting with container paths
+  are skipped.
 * Current working directory will be preserved only if that path exists in the
-  container. If not, home directory will be used.
-* SELinux must be disabled on CentOS for mounting volumes to work.
+  container. If not, cd to home directory.
+* SELinux must be disabled on CentOS for mounting volumes to work (see
+  #).
 
 ## Installation
+
+Switch first requires a working docker install.
 
 #### Install and setup docker
 
@@ -99,26 +167,32 @@ Installing docker - https://docs.docker.com/installation/ubuntulinux/
 
 Add yourself to docker group so you can run docker client without sudo:
 
+```shell
     $ sudo usermod -aG docker `whoami`
     
     # then logout and login again for the above command to take effect
-
+```
+	
 ##### CentOS
 
 Installing docker - https://docs.docker.com/installation/centos/
 
 Add yourself to docker group so you can run docker client without sudo:
 
+```shell
     $ sudo usermod -aG docker `whoami`
     
     # then logout and login again for the above command to take effect
-
+```
+	
 Disable SELinux as it gets in the way of mounting volumes within the container:
 
+```shell
     $ sed -i .bak 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
 
     # then reboot your system
-
+```
+	
 The above command backs up the original file to `/etc/selinux/config.bak`. If
 you are concerned about disabling SELinux, do note that we are trying to work
 out a better solution.
@@ -129,41 +203,44 @@ The following should give an encouraging message:
 
     $ docker run hello-world
 
-#### Install and use switch
+#### Install Switch
 
     $ git clone https://github.com/yeban/switch
     $ cd switch
     $ gem install bundler && bundle
     $ bundle exec bin/switch biolinux
 
-Obtaining BioLinux can take long. You may quickly want to test switch's feature
+Obtaining BioLinux can take a long time (e.g. up to 20 minutes on a fast new
+macbook with a university gigabit connection). You may quickly want to test switch's feature
 set using our docker baseimage, which is essentially Ubuntu 14.04.1.
 
     $ bundle exec bin/switch baseimage
 
 ## Roadmap
 
-* brew recipe for Mac
-* create an SELinux policy to run switch on CentOS without having to disable
-  SELinux entirely
-* rpm and deb pckages
-* test on QMUL's compute cluster
-* make available images for common bioinformatics software
+1.  make it possible to use docker containers without inheriting our
+current baseimage #12
+2. gem distribution for easier installation
+3.  brew recipe for Mac
+4. test on QMUL's compute cluster
+5.  create an SELinux policy to run switch on CentOS without having to disable
+SELinux entirely
+6. rpm and deb packages
+7. make available images for common bioinformatics software
+8. deploy at [RAL/JASMIN](http://www.jasmin.ac.uk)
 
-## Contributors
-
-* [Bruno Vieira](https://github.com/bmpvieira) ([@bmpvieira](//twitter.com/bmpvieira))
-* [Saurabh Kumar](https://github.com/sa1)
-
-## Contact
+## Contributors & Funding
 
 * Anurag Priyam - [a.priyam@qmul.ac.uk](mailto:a.priyam@qmul.ac.uk) | [@yeban](//twitter.com/yeban)
-* Yannick Wurm  - [@yannick__](//twitter.com/yannick__)
+* [Bruno Vieira](https://github.com/bmpvieira) ([@bmpvieira](//twitter.com/bmpvieira))
+* [Saurabh Kumar](https://github.com/sa1)
+* Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) |
+  [@yannick__](//twitter.com/yannick__)
 
 ---
 
 <p align="center">
-  Development funded by NERC EOS Cloud at
-  <a href="http://yannick.poulet.org/">Wurm Lab</a>,
-  <a href="http://www.qmul.ac.uk/">Queen Mary University of London</a>.
+  Development funded as part of NERC EOS Cloud at
+  <a href="http://wurmlab.github.io/">Wurm Lab</a>,
+  <a href="http://sbcs.mul.ac.uk/">Queen Mary University of London</a>.
 </p>
