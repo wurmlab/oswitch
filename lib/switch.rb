@@ -1,5 +1,6 @@
 require 'timeout'
 require 'colorize'
+require 'fileutils'
 require 'shellwords'
 
 # Switch leverages docker to provide access to complex Bioinformatics software
@@ -68,6 +69,14 @@ class Switch
   # Linux specific code.
   module Linux
 
+    def uid
+      Process.uid
+    end
+
+    def gid
+      Process.gid
+    end
+
     # Parse /proc/mounts for mountpoints.
     def mountpoints
       mtab = IO.readlines '/proc/mounts'
@@ -95,12 +104,20 @@ class Switch
 
     BLACKLIST =
       %r{
-    (^/$)|
+      ^/$|
       ^/(bin|cores|dev|etc|home|Incompatible\ Software|
          installer\.failurerequests|lost\+found|net|
          Network|opt|private|sbin|System|Users|tmp|
          usr|var|Volumes$)
       }x
+
+    def uid
+      `boot2docker ssh id -u`.chomp
+    end
+
+    def gid
+      `boot2docker ssh id -g`.chomp
+    end
 
     def mountpoints
       volumes = Dir['/Volumes/*'].map {|v| File.symlink?(v) ? File.readlink(v) : v}
@@ -119,22 +136,18 @@ class Switch
     include Darwin
   end
 
+  DOTDIR = File.expand_path('~/.switch')
+
   class << self
     # Invoke as `Switch.to` instead of `Switch.new`.
     alias_method :to, :new
     private :new
 
     def packages
-      pkgsdir = File.expand_path("../Dockerfiles", File.dirname(__FILE__))
-      Dir["#{pkgsdir}/*"].
+      Dir["#{DOTDIR}/*"].
         select {|entry| File.directory? entry}.
-        map {|entry|
-          Dir["#{entry}/*"].
-            select {|e| File.directory? e}
-        }.
-        flatten.
         map {|pkg|
-          pkg.gsub("#{pkgsdir}/", '').gsub!('/', '_')
+          pkg.gsub("#{DOTDIR}/", '')
         }
     end
   end
@@ -142,16 +155,8 @@ class Switch
   def initialize(package, command = [])
     @package = package.strip
     @command = command.join(' ')
-
-    # If user already has biolinux image on his system, we don't want to be
-    # using that, because we can't ensure the same reproducibile setup then.
-    # Let's prefix our images with 'switch/' to keep them separate from other
-    # images on the user's system. It must be noted though that other program
-    # may use the same prefix, and thus our images aren't truly isolated.
-    @imgname = "switch/#{@package.gsub('_', ':')}"
-
-    @cntname = "#@package-#{Process.pid}"
-
+    @imgname = "switch_#{@package}"
+    @cntname = "#{@package.gsub(%r{/|:}, '_')}-#{Process.pid}"
     exec
   end
 
@@ -167,15 +172,20 @@ class Switch
   private
 
   def switch
-    cmdline = "docker run --name #{cntname} --hostname #{cntname} -it --rm=true" \
-      " #{mountargs} #{imgname} #{userargs} #{motd} #{command}"
+    cmdline = "docker run --name #{cntname} --hostname #{cntname} -it --rm" \
+      " -w #{cwd} #{mountargs} #{imgname} "
+    if command.empty?
+      # Display motd and run interactive shell.
+      cmdline << "#{shell} -c \"echo #{motd}; #{shell} -i\""
+    else
+      cmdline << "#{shell} -c \"#{command}\""
+    end
     Kernel.exec cmdline
   end
 
   def build
-    raise ENOPKG, package unless srcpath
     return true if Image.exists? imgname
-    build_baseimage and system "docker build -t #{imgname} #{srcpath}"
+    write_context && system("docker build -t #{imgname} #{context_dir}")
   end
 
   # Ping docker daemon. Raise error if no response within 10s.
@@ -183,20 +193,56 @@ class Switch
     timeout(5, ENODKR) { system 'docker info &> /dev/null' } or raise ENODKR
   end
 
-  def srcpath
-    path = File.expand_path("../Dockerfiles/#{package.gsub('_', '/')}",
-                            File.dirname(__FILE__))
-    return path if File.directory? path
+  ## Code to generate context dir that will be built into a docker image. ##
+
+  # Write data to context dir.
+  def write_context
+    create_context_dir
+    write_dockerfile
   end
 
-  def build_baseimage
-    path = File.expand_path("../Dockerfiles/baseimage", File.dirname(__FILE__))
-    name = 'switch/baseimage'
-    return true if Image.exists? name
-    system "docker build -t #{name} #{path}"
+  # Create context dir.
+  def create_context_dir
+    FileUtils.mkdir_p context_dir
+    FileUtils.cp_r(template_files, context_dir)
   end
 
-  def user
+  # Write Dockerfile.
+  def write_dockerfile
+    dockerfile = File.join(context_dir, 'Dockerfile')
+    File.write(dockerfile, dockerfile_data)
+  end
+
+  # Generate String that get written to Dockerfile.
+  def dockerfile_data
+    data = ["FROM #{package}"]
+    data << 'COPY _switch /'
+    data << 'COPY wheel /etc/sudoers.d/'
+    data << "RUN /_switch #{userargs} 2>&1 | tee /tmp/switch.log"
+    data << 'ENV LC_ALL en_US.UTF-8'
+    data << "USER #{username}"
+    data << "ENTRYPOINT [\"#{shell}\", \"-c\"]"
+    data.join("\n")
+  end
+
+  # Location of context dir.
+  def context_dir
+    File.join(DOTDIR, package)
+  end
+
+  # Location of template dir.
+  def template_dir
+    File.expand_path('../context/', File.dirname(__FILE__))
+  end
+
+  # Template files.
+  def template_files
+    Dir[File.join(template_dir, '*')]
+  end
+
+
+  ## Data required to switchify a container. ##
+  def username
     ENV['USER']
   end
 
@@ -239,6 +285,6 @@ MOTD
   end
 
   def userargs
-    [user, home, shell, cwd].join(' ')
+    [uid, gid, username, home, shell].join(' ')
   end
 end

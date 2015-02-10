@@ -3,29 +3,40 @@
 require 'switch'
 require 'optparse'
 
+options = {}
+collect = lambda do |key|
+  lambda do |value|
+    options[key] = value
+  end
+end
+
 optspec = OptionParser.new do |opts|
   opts.banner = "Usage: switch [options] <package> [cmd]"
 
-  opts.on('-l', '--list', 'List packages.') do
-    puts Switch.packages
-    exit
-  end
+  opts.on '-l', '--list',
+          'List packages.',
+          &collect[:list]
 
-  opts.on("-h", "--help", "Print help.") do
-    puts opts
-    exit
-  end
+  opts.on '-h', '--help',
+          'Print help.',
+          &collect[:help]
 end
 
 begin
   optspec.order!
-rescue OptionParser::InvalidOption => e
+rescue OptionParser::InvalidOption,
+       OptionParser::MissingArgument => e
   puts e
   exit
 end
 
-if ARGV.empty?
+if options[:help] || (options.empty? && ARGV.empty?)
   puts optspec
+  exit
+end
+
+if options[:list]
+  puts Switch.packages
   exit
 end
 

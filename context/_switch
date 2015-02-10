@@ -1,0 +1,95 @@
+#!/usr/bin/env sh
+
+if [ $# -lt 5 ]; then
+  echo "Usage: ... <uid> <gid> <user> <home> <shell>"
+  exit
+fi
+
+uid=$1
+gid=$2
+user=$3;
+home=$4;
+shell=$5;
+shift 5
+
+echo
+echo "Switch-ifying ..."
+
+## Debian ##
+if command -v apt-get >/dev/null; then
+
+  export DEBIAN_FRONTEND=noninteractive
+
+  echo
+  echo 'Assuming Ubuntu.'
+  echo 'Attempting to activate universe and multiverse repositories.'
+  apt-get install -y software-properties-common
+  apt-add-repository universe
+  apt-add-repository multiverse
+
+  if [ $? -ne 0 ]; then
+    echo
+    echo 'Oops ... it is Debian. Continuing.'
+  fi
+
+  echo
+  echo 'Updating list of packages.'
+  apt-get update
+
+  echo
+  echo 'Installing utilities.'
+  apt-get install -y sudo less
+
+  echo
+  echo 'Setting up locale.'
+  apt-get install -y locales
+  echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen
+  locale-gen en_US.UTF-8
+
+  echo
+  echo "Installing $shell as requested."
+  apt-get install -y $shell
+
+## Red Hat ##
+elif command -v yum >/dev/null; then
+
+  echo 'Red Hat based image detected.'
+
+  echo
+  echo 'Installing utilities.'
+  yum install -y sudo passwd
+
+  echo
+  echo "Installing $shell as requested."
+  yum install -y $shell
+
+## Arch ##
+# elif command -v pacman >/dev/null; then
+#
+#   echo 'Arch based image detected.'
+#
+#   echo
+#   echo 'Updating list of packages.'
+#   pacman --noconfirm -Sy
+#
+#   echo
+#   echo "Installing $shell as requested."
+#   pacman --noconfirm -S $shell
+else
+  echo
+  echo "Can't infer base image."
+fi
+
+# Will create group 'wheel' to give passwordless sudo access to users. Will
+# create the user, without password, keeping the same uid as the host. Will
+# set newly created user as the current user in container.
+
+echo
+echo "Creating user $user with uid $uid ..."
+groupadd -f wheel
+useradd -M -N -g $gid -G wheel -d $home -u $uid $user
+passwd -d $user &> /dev/null
+
+echo 'Done.'
+echo "Your home directory is $homedir."
+echo 'You can use sudo.'
