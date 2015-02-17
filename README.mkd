@@ -232,8 +232,8 @@ set using our docker baseimage, which is essentially Ubuntu 14.04.1.
 
 ## Roadmap
 
-1.  make it possible to use docker containers without inheriting our
-current baseimage #12
+1. ~~make it possible to use docker containers without inheriting our
+current baseimage~~
 2. gem distribution for easier installation
 3.  brew recipe for Mac
 4. test on QMUL's compute cluster
