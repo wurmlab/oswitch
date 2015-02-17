@@ -190,7 +190,10 @@ class Switch
 
   # Ping docker daemon. Raise error if no response within 10s.
   def ping
-    timeout(5, ENODKR) { system 'docker info &> /dev/null' } or raise ENODKR
+    pong = timeout 5, ENODKR do
+      system 'docker info > /dev/null 2>&1'
+    end
+    pong or raise ENODKR
   end
 
   ## Code to generate context dir that will be built into a docker image. ##
