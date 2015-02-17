@@ -21,7 +21,6 @@ the skills necessary to setup complex bioinformatics software, and
 systems administrators can be overwhelmed by large numbers of software
 installation requests & the challenges of managing multiple versions.
 
-
 ## Aim & Features
 
 We are developing `switch` to enable **seamless switching
@@ -41,22 +40,19 @@ any point of time in the future. This is similar to using virtual
 machine images - but much more
 [flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
 
-
-`switch` is thus a wrapper facilitating access to docker
-images (without the need for ssh-ing).  Importantly, when switching
-operating systems inside a shell, most things remain unchanged:
+`switch` is thus a wrapper facilitating access to docker images (without the
+need for ssh-ing). Importantly, when switching operating systems inside a
+shell, most things remain unchanged:
 
 * Current working directory is maintained
-* User name is maintained
+* User name, uid and gid are maintained
 * Login shell (bash/zsh/fish) is maintained
 * Home directory is maintained (thus all .dotfiles and config files
-  are maintained). 
+  are maintained).
 * read/write permissions are maintained
-
 * Paths are maintained whenever possible. Thus volumes (external drives,
 NAS) mounted on the host are available in the container at the same
 path.
-
 
 ## Example Usage
 
