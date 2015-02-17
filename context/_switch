@@ -87,6 +87,7 @@ fi
 echo
 echo "Creating user $user with uid $uid ..."
 groupadd -f wheel
+groupadd -f $user -g $gid
 useradd -M -N -g $gid -G wheel -d $home -u $uid $user
 passwd -d $user &> /dev/null
 
