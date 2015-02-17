@@ -4,6 +4,7 @@ One-line access to other operating systems.
 
 * [Usage](#example-usage)
 * [Installation](#installation)
+* [FAQ](#faq)
 * [Roadmap](#roadmap)
 * [Contributors & Funding](#contributors-&-funding)
 
@@ -223,6 +224,44 @@ macbook with a university gigabit connection). You may quickly want to test swit
 set using our docker baseimage, which is essentially Ubuntu 14.04.1.
 
     $ bundle exec bin/switch baseimage
+
+## FAQ
+
+##### Q. Directories mounted within container on Mac host are empty.
+The problem is, on Mac `boot2docker` is the _real_ host, not OS X. `switch`
+can mount only what's available to it from `boot2docker`. For example,
+`/Applications`.
+
+Run `boot2docker ssh ls /Applications` and you will find it empty as well.
+
+The workaround is to correctly mount the directories you want in `boot2docker`
+first.
+
+```
+boot2docker down
+VBoxManage sharedfolder remove boot2docker-vm --name Applications
+VBoxManage sharedfolder add boot2docker-vm --name Applications --hostpath /Applications
+boot2docker up
+boot2docker ssh "sudo mkdir -p /Applications && sudo mount -t vboxsf -o uid=1000,gid=50 Applications /Applications"
+```
+
+##### Q. cwd is empty in the container
+This means the said directory was not mounted by switch, or was incorrectly
+mounted. On Linux host, directories that can conflict with paths within
+container are not mounted. On Mac, `boot2docker` can get in the way.
+
+Please [report](https://github.com/yeban/switch/issues/new) this on our [issue
+tracker](https://github.com/yeban/switch/issues). To help us debug, please
+include:
+
+1. the directory in question
+2. the operating system you are running
+
+##### Q. switch does not work with my docker image
+Please [report](https://github.com/yeban/switch/issues/new) this on our [issue
+tracker](https://github.com/yeban/switch/issues) with switch's output. If the
+image you are using is not available via docker hub or another public
+repository, please include the Dockerfile as well.
 
 ## Roadmap
 
