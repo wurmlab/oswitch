@@ -154,16 +154,10 @@ Switch has been tested on:
 
 ##### Caveats
 
-* Username is preserved, but userid may change. This does not
-  affect file permissions on mounted volumes.
-* Currently only bash/zsh/fish login shells are preserved. If host
-  uses a different shell, bash will be used within the container.
-* Host directories/volumes with paths conflicting with container paths
-  are skipped.
-* Current working directory will be preserved only if that path exists in the
-  container. If not, cd to home directory.
-* SELinux must be disabled on CentOS for mounting volumes to work (see
-  #).
+* Works only for Debian, Ubuntu, CentOS based docker images.
+* Host directories/volumes with paths conflicting with container paths are
+  skipped.
+* SELinux must be disabled on CentOS for mounting volumes to work.
 
 ## Installation
 
