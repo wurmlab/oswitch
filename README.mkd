@@ -66,7 +66,7 @@ Minimalist example:
 ```shell
 Yannick@n56-169 ~/g/oswitch> uname -a
 Darwin n56-169.sbcs.qmul.ac.uk 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
-Yannick@n56-169 ~/g/oswitch> bundle exec bin/oswitch biolinux_8 
+Yannick@n56-169 ~/g/oswitch> oswitch yeban/biolinux:8
 ### You are now running: biolinux_8, in container: biolinux_8-27182. ###
 Yannick@biolinux_8-27182 ~/g/oswitch> uname -a
 Linux biolinux_8-27182 3.16.4-tinycore64 #1 SMP Thu Oct 23 16:14:24 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
@@ -209,18 +209,15 @@ The following should give an encouraging message:
 
     $ docker run hello-world
 
-#### Install OSwitch
+#### Install oswitch
 
-    $ git clone https://github.com/yeban/oswitch
-    $ cd oswitch
-    $ gem install bundler && bundle
-    $ bundle exec bin/oswitch biolinux
+Requirements: Ruby 2.0 or higher.
 
-Obtaining BioLinux can take a long time (e.g. up to 20 minutes on a fast new
-macbook with a university gigabit connection). You may quickly want to test oswitch's feature
-set using Ubuntu.
+    $ gem install oswitch
 
-    $ bundle exec bin/oswitch ubuntu:14.04
+#### Testing oswitch
+
+    $ oswitch ubuntu:14.04
 
 ## FAQ
 
@@ -264,7 +261,7 @@ repository, please include the Dockerfile as well.
 
 1. ~~make it possible to use docker containers without inheriting our
 current baseimage~~
-2. gem distribution for easier installation
+2. ~~gem distribution for easier installation~~
 3.  brew recipe for Mac
 4. test on QMUL's compute cluster
 5.  create an SELinux policy to run oswitch on CentOS without having to disable
@@ -272,6 +269,13 @@ SELinux entirely
 6. rpm and deb packages
 7. make available images for common bioinformatics software
 8. deploy at [RAL/JASMIN](http://www.jasmin.ac.uk)
+
+## Contribute
+
+    $ git clone https://github.com/yeban/oswitch
+    $ cd oswitch
+    $ gem install bundler && bundle
+    $ bundle exec bin/oswitch biolinux
 
 ## Contributors & Funding
 
