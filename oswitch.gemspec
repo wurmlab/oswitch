@@ -2,7 +2,7 @@ Gem::Specification.new do |s|
   # meta
   s.name        = 'oswitch'
   s.version     = '0.1.0'
-  s.authors     = ['Anurag Priyam']
+  s.authors     = ['Anurag Priyam', 'Bruno Vieira', 'Yannick Wurm']
   s.email       = ['anurag08priyam@gmail.com']
   s.homepage    = 'https://github.com/yeban/oswitch'
   s.license     = 'MIT'
@@ -17,6 +17,7 @@ DESC
 
   # dependencies
   s.add_dependency('colorize',    '~> 0.7.5')
+  s.required_ruby_version =       '>= 2.0'
 
   # gem
   s.files         = Dir['lib/**/*'] + Dir['Dockerfiles/**/*']
@@ -24,4 +25,5 @@ DESC
   s.files         = s.files + ['README.mkd']
   s.require_paths = ['lib']
   s.executables   = ['oswitch']
+
 end
