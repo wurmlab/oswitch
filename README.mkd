@@ -1,4 +1,4 @@
-# Switch
+# OSwitch
 
 One-line access to other operating systems.
 
@@ -23,7 +23,7 @@ installation requests & the challenges of managing multiple versions.
 
 ## Aim & Features
 
-We are developing `switch` to enable **seamless switching
+We are developing `oswitch` to enable **seamless switching
 from one operating system to another** - providing access to diverse
 ranges of tools. This project grew from our own need to rapidly access
 software distributed as part of
@@ -40,7 +40,7 @@ any point of time in the future. This is similar to using virtual
 machine images - but much more
 [flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
 
-`switch` is thus a wrapper facilitating access to docker images (without the
+`oswitch` is thus a wrapper facilitating access to docker images (without the
 need for ssh-ing). Importantly, when switching operating systems inside a
 shell, most things remain unchanged:
 
@@ -64,11 +64,11 @@ use.
 Minimalist example:
 
 ```shell
-Yannick@n56-169 ~/g/switch> uname -a
+Yannick@n56-169 ~/g/oswitch> uname -a
 Darwin n56-169.sbcs.qmul.ac.uk 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
-Yannick@n56-169 ~/g/switch> bundle exec bin/switch biolinux_8 
+Yannick@n56-169 ~/g/oswitch> bundle exec bin/oswitch biolinux_8 
 ### You are now running: biolinux_8, in container: biolinux_8-27182. ###
-Yannick@biolinux_8-27182 ~/g/switch> uname -a
+Yannick@biolinux_8-27182 ~/g/oswitch> uname -a
 Linux biolinux_8-27182 3.16.4-tinycore64 #1 SMP Thu Oct 23 16:14:24 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
@@ -89,7 +89,7 @@ zsh: command not found: blastp
 # Indeed... blastp is not installed on my MacBook. 
 
 # Switch to BioLinux and run blastp.
-pixel:~/test/ $ switch biolinux
+pixel:~/test/ $ oswitch biolinux
 ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 >  mygene_blastp_nr.tab
 # BioLinux includes blastp, thus the command ran smoothly.
@@ -128,22 +128,23 @@ the exit status of the command run within container is returned.
 
 ```shell
 # Run command directly in BioLinux and view results if success.
-pixel:~/test/ $  switch biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
+pixel:~/test/ $ oswitch biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
 ```
 
 ##### Listing available operating system containers
 
-Switch ships with BioLinux 8. More containers will be added later.
+OSwitch can pull any image from docker hub. You can see the images you pulled
+from docker hub using oswitch as:
 
 ```shell
-pixel:~ $ switch -l
-biolinux_8
-ubuntu
+pixel:~ $ oswitch -l
+yeban/biolinux:8
+ubuntu:14.04
 ```
 	
 ##### Availability
 
-Switch has been tested on:
+OSwitch has been tested on:
 
 * Mac OS X Yosemite
 * Ubuntu 14.04.1
@@ -158,7 +159,7 @@ Switch has been tested on:
 
 ## Installation
 
-Switch first requires a working docker install.
+OSwitch first requires a working docker install.
 
 #### Install and setup docker
 
@@ -208,23 +209,23 @@ The following should give an encouraging message:
 
     $ docker run hello-world
 
-#### Install Switch
+#### Install OSwitch
 
-    $ git clone https://github.com/yeban/switch
-    $ cd switch
+    $ git clone https://github.com/yeban/oswitch
+    $ cd oswitch
     $ gem install bundler && bundle
-    $ bundle exec bin/switch biolinux
+    $ bundle exec bin/oswitch biolinux
 
 Obtaining BioLinux can take a long time (e.g. up to 20 minutes on a fast new
-macbook with a university gigabit connection). You may quickly want to test switch's feature
-set using our docker baseimage, which is essentially Ubuntu 14.04.1.
+macbook with a university gigabit connection). You may quickly want to test oswitch's feature
+set using Ubuntu.
 
-    $ bundle exec bin/switch baseimage
+    $ bundle exec bin/oswitch ubuntu:14.04
 
 ## FAQ
 
 ##### Q. Directories mounted within container on Mac host are empty.
-The problem is, on Mac `boot2docker` is the _real_ host, not OS X. `switch`
+The problem is, on Mac `boot2docker` is the _real_ host, not OS X. `oswitch`
 can mount only what's available to it from `boot2docker`. For example,
 `/Applications`.
 
@@ -242,20 +243,20 @@ boot2docker ssh "sudo mkdir -p /Applications && sudo mount -t vboxsf -o uid=1000
 ```
 
 ##### Q. cwd is empty in the container
-This means the said directory was not mounted by switch, or was incorrectly
+This means the said directory was not mounted by oswitch, or was incorrectly
 mounted. On Linux host, directories that can conflict with paths within
 container are not mounted. On Mac, `boot2docker` can get in the way.
 
-Please [report](https://github.com/yeban/switch/issues/new) this on our [issue
-tracker](https://github.com/yeban/switch/issues). To help us debug, please
+Please [report](https://github.com/yeban/oswitch/issues/new) this on our [issue
+tracker](https://github.com/yeban/oswitch/issues). To help us debug, please
 include:
 
 1. the directory in question
 2. the operating system you are running
 
-##### Q. switch does not work with my docker image
-Please [report](https://github.com/yeban/switch/issues/new) this on our [issue
-tracker](https://github.com/yeban/switch/issues) with switch's output. If the
+##### Q. oswitch does not work with my docker image
+Please [report](https://github.com/yeban/oswitch/issues/new) this on our [issue
+tracker](https://github.com/yeban/oswitch/issues) with oswitch's output. If the
 image you are using is not available via docker hub or another public
 repository, please include the Dockerfile as well.
 
@@ -266,7 +267,7 @@ current baseimage~~
 2. gem distribution for easier installation
 3.  brew recipe for Mac
 4. test on QMUL's compute cluster
-5.  create an SELinux policy to run switch on CentOS without having to disable
+5.  create an SELinux policy to run oswitch on CentOS without having to disable
 SELinux entirely
 6. rpm and deb packages
 7. make available images for common bioinformatics software

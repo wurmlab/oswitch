@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'switch'
+require 'oswitch'
 require 'optparse'
 
 options = {}
@@ -11,7 +11,7 @@ collect = lambda do |key|
 end
 
 optspec = OptionParser.new do |opts|
-  opts.banner = "Usage: switch [options] <package> [cmd]"
+  opts.banner = "Usage: oswitch [options] <package> [cmd]"
 
   opts.on '-l', '--list',
           'List packages.',
@@ -36,10 +36,10 @@ if options[:help] || (options.empty? && ARGV.empty?)
 end
 
 if options[:list]
-  puts Switch.packages
+  puts OSwitch.packages
   exit
 end
 
 package = ARGV[0]
 command = ARGV[1..-1]
-Switch.to(package, command)
+OSwitch.to(package, command)

@@ -3,7 +3,7 @@ require 'colorize'
 require 'fileutils'
 require 'shellwords'
 
-# Switch leverages docker to provide access to complex Bioinformatics software
+# OSwitch leverages docker to provide access to complex Bioinformatics software
 # (even Biolinux!) in just one command.
 #
 # Images are built on the user's system on demand and executed in a container.
@@ -11,7 +11,7 @@ require 'shellwords'
 #
 # Volumes from host OS are mounted in the container just the same, including
 # home directory. USER, HOME, SHELL, and PWD are preserved.
-class Switch
+class OSwitch
 
   class ENOPKG < StandardError
 
@@ -136,10 +136,10 @@ class Switch
     include Darwin
   end
 
-  DOTDIR = File.expand_path('~/.switch')
+  DOTDIR = File.expand_path('~/.oswitch')
 
   class << self
-    # Invoke as `Switch.to` instead of `Switch.new`.
+    # Invoke as `OSwitch.to` instead of `OSwitch.new`.
     alias_method :to, :new
     private :new
 
@@ -155,7 +155,7 @@ class Switch
   def initialize(package, command = [])
     @package = package.strip
     @command = command.join(' ')
-    @imgname = "switch_#{@package}"
+    @imgname = "oswitch_#{@package}"
     @cntname = "#{@package.gsub(%r{/|:}, '_')}-#{Process.pid}"
     exec
   end
@@ -221,7 +221,7 @@ class Switch
     data = ["FROM #{package}"]
     data << 'COPY _switch /'
     data << 'COPY wheel /etc/sudoers.d/'
-    data << "RUN /_switch #{userargs} 2>&1 | tee /tmp/switch.log"
+    data << "RUN /_switch #{userargs} 2>&1 | tee /tmp/oswitch.log"
     data << 'ENV LC_ALL en_US.UTF-8'
     data << "USER #{username}"
     data << "ENTRYPOINT [\"#{shell}\", \"-c\"]"
