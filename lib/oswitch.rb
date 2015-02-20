@@ -144,11 +144,15 @@ class OSwitch
     private :new
 
     def packages
-      Dir["#{DOTDIR}/*"].
-        select {|entry| File.directory? entry}.
-        map {|pkg|
-          pkg.gsub("#{DOTDIR}/", '')
-        }
+      Dir["#{DOTDIR}/*"].map do |rep|
+        pkgs = Dir["#{rep}/*"].select {|pkg| File.directory?(pkg)}
+        pkgs = [rep] if pkgs.empty?
+        pkgs
+      end.
+      flatten.
+      map {|pkg|
+        pkg.gsub("#{DOTDIR}/", '')
+      }
     end
   end
 
