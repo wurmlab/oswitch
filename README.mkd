@@ -54,7 +54,7 @@ help make something happen. We first shared the resulting concept during a
 [Balti & Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
 presentation in the form of this (now out of date!) slide:
 
-[![Slide from Balti](http://i.imgur.com/Dpxayzl.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
+[![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
 
 
 Docker images feel similar to using virtual machine images - but are much more
