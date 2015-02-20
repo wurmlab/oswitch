@@ -180,9 +180,9 @@ class OSwitch
       " -w #{cwd} #{mountargs} #{imgname} "
     if command.empty?
       # Display motd and run interactive shell.
-      cmdline << "#{shell} -c \"echo #{motd}; #{shell} -i\""
+      cmdline << "\"echo #{motd}; #{shell} -i\""
     else
-      cmdline << "#{shell} -c \"#{command}\""
+      cmdline << "\"#{command}\""
     end
     Kernel.exec cmdline
   end
