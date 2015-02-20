@@ -5,15 +5,20 @@ One-line access to other operating systems.
 Mini-example:
 
 ```bash
-mymacbook:~/2015-02-01-myproject> abyss-pe                                                                                                                                             2 master!?
-zsh: command not found: abyss-pe
+mymacbook:~/2015-02-01-myproject> abyss-pe
+    zsh: command not found: abyss-pe
+mymacbook:~/2015-02-01-myproject> oswitch -l
+    yeban/biolinux:8
+    ubuntu:14.04
+    ontouchstart/texlive-full
+    ipython/ipython
 mymacbook:~/2015-02-01-myproject> oswitch biolinux
-###### You are now running: biolinux in container biolinux-7187. ######
+    ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
-[... just works on your files where they are...]
+    [... just works on your files where they are...]
 biolinux-7187:~/2015-02-01-myproject> exit
 mymacbook:~/2015-02-01-myproject>
-[... output is where you expect it to be ...]
+    [... output is where you expect it to be ...]
 ```
 
 Detailed information:
@@ -47,9 +52,9 @@ important for [reproducible research](http://www.software.ac.uk) and agility.
 @bmpvieira made it clear early on that the [docker](http://docker.io/) could
 help make something happen. We first shared the resulting concept during a
 [Balti & Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
-presentation in the form of this slide:
+presentation in the form of this (now out of date!) slide:
 
-[![Slide from Balti](http://i.imgur.com/PaKX4Ju.jpg)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
+[![Slide from Balti](http://i.imgur.com/Dpxayzl.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
 
 
 Docker images feel similar to using virtual machine images - but are much more
@@ -314,7 +319,7 @@ SELinux entirely
 
 <p align="center">
   Development funded as part of 
-  <a href="http://environmentalomics.org/portfolio/big-data-infrastructure/">NERC Environmental Omics (EOS) Cloud</a> at
+  <a href="http://environmentalomics.org/portfolio/big-data-infrastructure/">NERC Environmental Omics (EOS) Cloud</a> at<br/>
   <a href="http://wurmlab.github.io/">Wurm Lab</a>,
   <a href="http://sbcs.mul.ac.uk/">Queen Mary University of London</a>.
 </p>
