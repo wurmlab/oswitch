@@ -2,6 +2,27 @@
 
 One-line access to other operating systems.
 
+Mini-example:
+
+```bash
+mymacbook:~/2015-02-01-myproject> abyss-pe
+    zsh: command not found: abyss-pe
+mymacbook:~/2015-02-01-myproject> oswitch -l
+    yeban/biolinux:8
+    ubuntu:14.04
+    ontouchstart/texlive-full
+    ipython/ipython
+mymacbook:~/2015-02-01-myproject> oswitch biolinux
+    ###### You are now running: biolinux in container biolinux-7187. ######
+biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
+    [... just works on your files where they are...]
+biolinux-7187:~/2015-02-01-myproject> exit
+mymacbook:~/2015-02-01-myproject>
+    [... output is where you expect it to be ...]
+```
+
+Detailed information:
+* [Features](#features)
 * [Usage](#example-usage)
 * [Installation](#installation)
 * [FAQ](#faq)
@@ -10,39 +31,40 @@ One-line access to other operating systems.
 
 ## Background
 
-Genomic analyses require using many bioinformatics tools starting from assessing
-the quality of sequenced data and assembly, to annotation, comparison and
-analysis. The data types are young, thus the tools are too and many
-genomicists lack computational training. Thus tools are frequently
-updated yet often challenging to install. Furthermore, software updates often
-involve changes in algorithms or input/output formats, making analyses
-difficult to reproduce. To make matters worse, genomicists often lack
-the skills necessary to setup complex bioinformatics software, and
-systems administrators can be overwhelmed by large numbers of software
-installation requests & the challenges of managing multiple versions.
+Genomic analyses require jumping back and forth between many bioinformatics tools.
+The data types are young, thus so are the tools. This leads to frequent
+updates of tools that are often challenging to install. Furthermore, it is
+challenging to keep different versions of software for different projects, yet
+changing versions can make analyses difficult to reproduce. To make matters worse,
+genomicists often lack the skills necessary to setup complex bioinformatics software,
+and systems administrators can be overwhelmed by large numbers of software
+installation requests.
 
-## Aim & Features
+## Aim
 
 We are developing `oswitch` to enable **seamless switching
 from one operating system to another** - providing access to diverse
-ranges of tools. This project grew from our own need to rapidly access
-software distributed as part of
+ranges of tools. This project grew from our own need to rapidly access 
+diverse pieces of specific versions of software including those distributed as part of
 [BioLinux](http://environmentalomics.org/bio-linux/) on our MacBooks
-and our university HPC system.
+and our university HPC system. This was previously too difficult, but is
+important for [reproducible research](http://www.software.ac.uk) and agility.
+@bmpvieira made it clear early on that the [docker](http://docker.io/) could
+help make something happen. We first shared the resulting concept during a
+[Balti & Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
+presentation in the form of this (now out of date!) slide:
 
-For this we take advantage of the [docker](http://docker.io/)
-technology. Docker works by creating "to the specification" image from
-a Dockerfile, which is then run in an isolated
-"container". Dockerfiles or the resulting images can persist forever,
-are easily [shared or published](https://hub.docker.com/), and make
-it possible for anybody to recreate the exact same setup at
-any point of time in the future. This is similar to using virtual
-machine images - but much more
+[![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
+
+Docker images feel similar to using virtual machine images - but are much more
 [flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
+They are thus easily [shared or published](https://hub.docker.com/). We are extremely lucky to
+be able to build upon this amazing technology.
 
-`oswitch` is thus a wrapper facilitating access to docker images (without the
-need for ssh-ing). Importantly, when switching operating systems inside a
-shell, most things remain unchanged:
+## Features
+
+**`oswitch` is a wrapper facilitating access to docker images**. Importantly, when switching
+operating systems inside a shell, most things remain unchanged:
 
 * Current working directory is maintained
 * User name, uid and gid are maintained
@@ -51,7 +73,7 @@ shell, most things remain unchanged:
   are maintained).
 * read/write permissions are maintained
 * Paths are maintained whenever possible. Thus volumes (external drives,
-NAS) mounted on the host are available in the container at the same
+NAS, USB) mounted on the host are available in the container at the same
 path.
 
 ## Example Usage
@@ -64,11 +86,11 @@ use.
 Minimalist example:
 
 ```shell
-Yannick@n56-169 ~/g/oswitch> uname -a
+Yannick@n56-169 ~/myproject> uname -a
 Darwin n56-169.sbcs.qmul.ac.uk 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
-Yannick@n56-169 ~/g/oswitch> oswitch yeban/biolinux:8
+Yannick@n56-169 ~/myproject> oswitch yeban/biolinux
 ### You are now running: biolinux_8, in container: biolinux_8-27182. ###
-Yannick@biolinux_8-27182 ~/g/oswitch> uname -a
+Yannick@biolinux_8-27182 ~/myproject> uname -a
 Linux biolinux_8-27182 3.16.4-tinycore64 #1 SMP Thu Oct 23 16:14:24 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
 ```
 
@@ -86,10 +108,10 @@ ITKIKLENSDVTIPDIKLIMFPKEPYTADWMLAFRVVIPLYMVLALSQFITYLLILIVGE
 KENKIKEGMKMMGLNDSVF
 pixel:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 > mygene_blastp_nr.tab
 zsh: command not found: blastp
-# Indeed... blastp is not installed on my MacBook. 
+# Indeed... blastp is missing from my MacBook. 
 
 # Switch to BioLinux and run blastp.
-pixel:~/test/ $ oswitch biolinux
+pixel:~/test/ $ oswitch yeban/biolinux
 ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 >  mygene_blastp_nr.tab
 # BioLinux includes blastp, thus the command ran smoothly.
@@ -114,6 +136,7 @@ myfavoritegene	gi|328778864|ref|XP_397465.4|	80.60	201	36	2	1	199	95	294	5e-108	
 biolinux-7187:~/test/ $ exit
 pixel:~/test/ $ ls 
 mygene.fasta mygene_blastp_nr.txt
+# our newly generated file is where we'd expect it to be.
 ```
 
 ##### Use a package non-interactively
@@ -128,7 +151,7 @@ the exit status of the command run within container is returned.
 
 ```shell
 # Run command directly in BioLinux and view results if success.
-pixel:~/test/ $ oswitch biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
+pixel:~/test/ $ oswitch yeban/biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
 ```
 
 ##### Listing available operating system containers
@@ -140,11 +163,13 @@ from docker hub using oswitch as:
 pixel:~ $ oswitch -l
 yeban/biolinux:8
 ubuntu:14.04
+ontouchstart/texlive-full
+ipython/ipython
 ```
 	
 ##### Availability
 
-OSwitch has been tested on:
+We have tested OSwitch on:
 
 * Mac OS X Yosemite
 * Ubuntu 14.04.1
@@ -152,20 +177,31 @@ OSwitch has been tested on:
 
 ##### Caveats
 
-* Works only for Debian, Ubuntu, CentOS based docker images.
+* Some features work only for Debian, Ubuntu, CentOS based docker images.
 * Host directories/volumes with paths conflicting with container paths are
   skipped.
 * SELinux must be disabled on CentOS for mounting volumes to work.
+* [Volume mounting on Mac OS hosts is imperfect](#q-directories-mounted-within-container-on-mac-host-are-empty).
 
 ## Installation
 
-OSwitch first requires a working docker install.
+OSwitch first requires a [working docker install](#Install and setup docker). 
 
-#### Install and setup docker
+#### Install oswitch
+
+Requirements: Ruby 2.0 or higher.
+
+    $ gem install oswitch
+
+#### Test oswitch
+
+    $ oswitch ubuntu:14.04
+
+## Install and setup docker
 
 ##### Mac OS X
 
-Installing docker - https://docs.docker.com/installation/mac/
+Installing docker is much easier than before - https://docs.docker.com/installation/mac/
 
 ##### Ubuntu
 
@@ -209,16 +245,6 @@ The following should give an encouraging message:
 
     $ docker run hello-world
 
-#### Install oswitch
-
-Requirements: Ruby 2.0 or higher.
-
-    $ gem install oswitch
-
-#### Testing oswitch
-
-    $ oswitch ubuntu:14.04
-
 ## FAQ
 
 ##### Q. Directories mounted within container on Mac host are empty.
@@ -257,14 +283,19 @@ tracker](https://github.com/yeban/oswitch/issues) with oswitch's output. If the
 image you are using is not available via docker hub or another public
 repository, please include the Dockerfile as well.
 
+##### Q. How does all this work?
+We create a new image on the fly that inherits from the given image. While creating
+the new image we execute a shell script that installs packages required for
+oswitch to work and creates a user in the image (almost) identical to that on the host.
+
 ## Roadmap
 
 1. ~~make it possible to use docker containers without inheriting our
 current baseimage~~
 2. ~~gem distribution for easier installation~~
-3.  brew recipe for Mac
+3. brew recipe for Mac
 4. test on QMUL's compute cluster
-5.  create an SELinux policy to run oswitch on CentOS without having to disable
+5. create an SELinux policy to run oswitch on CentOS without having to disable
 SELinux entirely
 6. rpm and deb packages
 7. make available images for common bioinformatics software
@@ -283,13 +314,13 @@ SELinux entirely
 * [Bruno Vieira](https://github.com/bmpvieira) ([@bmpvieira](//twitter.com/bmpvieira))
 * [Saurabh Kumar](https://github.com/sa1)
 * Richard Nichols - [http://www.sbcs.qmul.ac.uk/staff/richardnichols.html](http://www.sbcs.qmul.ac.uk/staff/richardnichols.html) | [@qmwugbt112](//twitter.com/qmwugbt112)
-* Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) |
-  [@yannick__](//twitter.com/yannick__)
+* Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) | [@yannick__](//twitter.com/yannick__)
 
 ---
 
 <p align="center">
-  Development funded as part of NERC EOS Cloud at
+  Development funded as part of 
+  <a href="http://environmentalomics.org/portfolio/big-data-infrastructure/">NERC Environmental Omics (EOS) Cloud</a> at<br/>
   <a href="http://wurmlab.github.io/">Wurm Lab</a>,
   <a href="http://sbcs.mul.ac.uk/">Queen Mary University of London</a>.
 </p>
