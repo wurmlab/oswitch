@@ -22,7 +22,7 @@ mymacbook:~/2015-02-01-myproject>
 ```
 
 Detailed information:
-
+* [Features](#features)
 * [Usage](#example-usage)
 * [Installation](#installation)
 * [FAQ](#faq)
@@ -40,7 +40,7 @@ genomicists often lack the skills necessary to setup complex bioinformatics soft
 and systems administrators can be overwhelmed by large numbers of software
 installation requests.
 
-## Aim & Features
+## Aim
 
 We are developing `oswitch` to enable **seamless switching
 from one operating system to another** - providing access to diverse
@@ -56,11 +56,12 @@ presentation in the form of this (now out of date!) slide:
 
 [![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
 
-
 Docker images feel similar to using virtual machine images - but are much more
 [flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
 They are thus easily [shared or published](https://hub.docker.com/). We are extremely lucky to
 be able to build upon this amazing technology.
+
+## Features
 
 **`oswitch` is a wrapper facilitating access to docker images**. Importantly, when switching
 operating systems inside a shell, most things remain unchanged:
