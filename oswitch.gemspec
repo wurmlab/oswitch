@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   # meta
   s.name        = 'oswitch'
-  s.version     = '0.1.0'
+  s.version     = '0.2.0'
   s.authors     = ['Anurag Priyam', 'Bruno Vieira', 'Yannick Wurm']
   s.email       = ['anurag08priyam@gmail.com']
   s.homepage    = 'https://github.com/yeban/oswitch'
