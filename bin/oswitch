@@ -37,6 +37,13 @@ end
 
 if options[:list]
   puts OSwitch.packages
+  if OSwitch.packages.empty?
+    puts "Nothing installed. Use anything from http://registry.hub.docker.com\n" +
+         "Some examples: oswitch ubuntu\n" +
+         "               oswitch yeban/biolinux:8\n" +
+         "               oswitch centos\n" +
+         "               oswitch nucleotides/sga"
+  end
   exit
 end
 
