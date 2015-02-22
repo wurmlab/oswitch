@@ -1,7 +1,6 @@
 # Caveats
 # -------
-# If you are using chruby, the installed oswitch binary works only after
-# `chruby system`.
+# Since we do gem install, it doesn't get uninstalled on brew install.
 #
 # Reference
 # ---------
@@ -19,5 +18,18 @@ class Oswitch < Formula
 
   def install
     system "gem build oswitch.gemspec && gem install oswitch-#{version}.gem"
+    rewrite_executable
+  end
+
+  def rewrite_executable
+    lines = File.readlines(executable)
+    index = lines.index "require 'rubygems'\n"
+    lines.insert index, "ENV.delete 'GEM_PATH'\n\n"
+    lines.insert index, "ENV.delete 'GEM_HOME'\n"
+    File.write(executable, lines.join)
+  end
+
+  def executable
+    '/usr/local/bin/oswitch'
   end
 end
