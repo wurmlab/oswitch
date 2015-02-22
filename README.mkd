@@ -189,6 +189,12 @@ OSwitch first requires a [working docker install](#Install and setup docker).
 
 #### Install oswitch
 
+##### Mac
+
+    $ brew install https://github.com/yeban/oswitch/blob/master/homebrew/oswitch.rb
+
+##### Linux
+
 Requirements: Ruby 2.0 or higher.
 
     $ gem install oswitch
@@ -293,7 +299,7 @@ oswitch to work and creates a user in the image (almost) identical to that on th
 1. ~~make it possible to use docker containers without inheriting our
 current baseimage~~
 2. ~~gem distribution for easier installation~~
-3. brew recipe for Mac
+3. ~~brew recipe for Mac~~
 4. test on QMUL's compute cluster
 5. create an SELinux policy to run oswitch on CentOS without having to disable
 SELinux entirely
