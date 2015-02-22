@@ -1,7 +1,3 @@
-# Caveats
-# -------
-# Since we do gem install, it doesn't get uninstalled on brew install.
-#
 # Reference
 # ---------
 # 1. https://github.com/Homebrew/homebrew/blob/master/Library/Contributions/example-formula.rb
@@ -17,19 +13,14 @@ class Oswitch < Formula
   depends_on 'ruby'
 
   def install
-    system "gem build oswitch.gemspec && gem install oswitch-#{version}.gem"
-    rewrite_executable
-  end
+    # Build gem and install to prefix.
+    system "gem build oswitch.gemspec && \
+gem install -i #{prefix} oswitch-#{version}.gem"
 
-  def rewrite_executable
-    lines = File.readlines(executable)
-    index = lines.index "require 'rubygems'\n"
-    lines.insert index, "ENV.delete 'GEM_PATH'\n\n"
-    lines.insert index, "ENV.delete 'GEM_HOME'\n"
-    File.write(executable, lines.join)
-  end
-
-  def executable
-    '/usr/local/bin/oswitch'
+    # Re-write RubyGem generated bin stub to load oswitch from prefix.
+    inreplace "#{bin}/oswitch" do |s|
+      s.gsub!(/require 'rubygems'/,
+              "ENV['GEM_HOME']='#{prefix}'\nrequire 'rubygems'")
+    end
   end
 end
