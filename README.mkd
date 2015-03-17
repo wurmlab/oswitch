@@ -300,12 +300,13 @@ oswitch to work and creates a user in the image (almost) identical to that on th
 current baseimage~~
 2. ~~gem distribution for easier installation~~
 3. ~~brew recipe for Mac~~
-4. test on QMUL's compute cluster
-5. create an SELinux policy to run oswitch on CentOS without having to disable
+4. ~~deb package~~
+5. test on QMUL's compute cluster
+6. make available images for common bioinformatics software
+7. deploy at [RAL/JASMIN](http://www.jasmin.ac.uk)
+8. create an SELinux policy to run oswitch on CentOS without having to disable
 SELinux entirely
-6. rpm and deb packages
-7. make available images for common bioinformatics software
-8. deploy at [RAL/JASMIN](http://www.jasmin.ac.uk)
+9. rpm package
 
 ## Contribute
 
