@@ -2,7 +2,7 @@ Source: oswitch
 Section: ruby
 Priority: optional
 Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
-Uploaders:  <>
+Uploaders:  Anurag Priyam <anurag08priyam@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.6.1~)
 Standards-Version: 3.9.4
 #Vcs-Git: git://anonscm.debian.org/pkg-ruby-extras/oswitch.git
