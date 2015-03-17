@@ -15,7 +15,7 @@ Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
 Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-colorize (>= 0.7.5)
 # colorize (~> 0.7.5)
-Description: Use docker image as the host operating system's user and access host operating system's filesystem.
- Use any docker image as the host operating system's user (same user name, same
- uid, same gid, and even the same shell!) and access to host operating system's
- filesystem.
+Description: Use docker image as the host operating system's user and access
+ host operating system's filesystem.  Use any docker image as the host operating
+ system's user (same user name, same uid, same gid, and even the same shell!)
+ and access to host operating system's filesystem.
