@@ -1,0 +1,72 @@
+--- !ruby/object:Gem::Specification
+name: oswitch
+version: !ruby/object:Gem::Version
+  version: 0.2.3
+platform: ruby
+authors:
+- Anurag Priyam
+- Bruno Vieira
+- Yannick Wurm
+autorequire: 
+bindir: bin
+cert_chain: []
+date: 2015-02-20 00:00:00.000000000 Z
+dependencies:
+- !ruby/object:Gem::Dependency
+  name: colorize
+  requirement: !ruby/object:Gem::Requirement
+    requirements:
+    - - "~>"
+      - !ruby/object:Gem::Version
+        version: 0.7.5
+  type: :runtime
+  prerelease: false
+  version_requirements: !ruby/object:Gem::Requirement
+    requirements:
+    - - "~>"
+      - !ruby/object:Gem::Version
+        version: 0.7.5
+description: |
+  Use any docker image as the host operating system's user (same user name, same
+  uid, same gid, and even the same shell!) and access to host operating system's
+  filesystem.
+email:
+- anurag08priyam@gmail.com
+executables:
+- oswitch
+extensions: []
+extra_rdoc_files: []
+files:
+- Gemfile
+- README.mkd
+- bin/oswitch
+- context/_switch
+- context/wheel
+- lib/oswitch.rb
+- oswitch.gemspec
+homepage: https://github.com/yeban/oswitch
+licenses:
+- MIT
+metadata: {}
+post_install_message: 
+rdoc_options: []
+require_paths:
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement
+  requirements:
+  - - ">="
+    - !ruby/object:Gem::Version
+      version: '2.0'
+required_rubygems_version: !ruby/object:Gem::Requirement
+  requirements:
+  - - ">="
+    - !ruby/object:Gem::Version
+      version: '0'
+requirements: []
+rubyforge_project: 
+rubygems_version: 2.4.2
+signing_key: 
+specification_version: 4
+summary: Use docker image as the host operating system's user and access host operating
+  system's filesystem.
+test_files: []
