@@ -3,6 +3,8 @@ require 'colorize'
 require 'fileutils'
 require 'shellwords'
 
+require 'oswitch/pkg'
+
 # OSwitch leverages docker to provide access to complex Bioinformatics software
 # (even Biolinux!) in just one command.
 #
@@ -239,7 +241,7 @@ class OSwitch
 
   # Location of template dir.
   def template_dir
-    File.expand_path('../context/', File.dirname(__FILE__))
+    File.join(PREFIX, 'share', 'oswitch', 'context')
   end
 
   # Template files.
