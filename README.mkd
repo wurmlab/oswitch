@@ -191,7 +191,7 @@ OSwitch first requires a [working docker install](#Install and setup docker).
 
 ##### Mac
 
-    $ brew install https://github.com/yeban/oswitch/blob/master/homebrew/oswitch.rb
+    $ brew install https://raw.githubusercontent.com/yeban/oswitch/master/homebrew/oswitch.rb
 
 ##### Linux
 
