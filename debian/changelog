@@ -1,5 +1,13 @@
-oswitch (0.2.3-1) UNRELEASED; urgency=medium
+oswitch (0.2.3.01-1ubuntu1) UNRELEASED; urgency=medium
 
+  [ Anurag Priyam ]
   * Initial release
 
- -- Anurag Priyam <anurag08priyam@gmail.com>  Tue, 17 Mar 2015 07:41:55 +0000
+  [ Tim Booth ]
+  * Add .01 to version because files have changed compared to 0.2.3 in master
+    branch.
+  * Compat level 9
+  * Ensure shebang line gets fixed to ruby2.1 or ruby2.0
+  * Ensure runtime ruby dep gets fixed to match
+
+ -- Tim Booth <tbooth@ceh.ac.uk>  Wed, 25 Mar 2015 13:30:45 +0000

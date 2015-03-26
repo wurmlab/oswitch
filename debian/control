@@ -3,7 +3,7 @@ Section: ruby
 Priority: optional
 Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
 Uploaders:  Anurag Priyam <anurag08priyam@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.6.1~)
+Build-Depends: debhelper (>= 7.0.50~), ruby2.0-dev | ruby2.1-dev, gem2deb (>= 0.6.1~)
 Standards-Version: 3.9.5
 Homepage: https://github.com/yeban/oswitch
 XS-Ruby-Versions: all
@@ -11,7 +11,7 @@ XS-Ruby-Versions: all
 Package: oswitch
 Architecture: all
 XB-Ruby-Versions: ${ruby:Versions}
-Depends: ${shlibs:Depends}, ${misc:Depends}, ruby | ruby-interpreter, ruby-colorize (>= 0.7.5)
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${ruby:Interpreter}, ruby-colorize (>= 0.7.5)
 Description: Use docker image as the host operating system's user and access
  host operating system's filesystem.  Use any docker image as the host operating
  system's user (same user name, same uid, same gid, and even the same shell!)

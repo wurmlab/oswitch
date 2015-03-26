@@ -11,5 +11,15 @@
 # If you need to specify the .gemspec (eg there is more than one)
 #export DH_RUBY_GEMSPEC=gem.gemspec
 
+RUBY_VERSION := $(shell ls /usr/bin/ruby2* | tail -n1 | sed 's,.*/,,')
+
 %:
 	dh $@ --buildsystem=ruby --with ruby
+
+override_dh_auto_install:
+	dh_auto_install
+	# Workaround to allow the package to build unmodified with ruby2.1 or 2.0
+	# and still specify the one to call:
+	sed -i '1s,.*,#!/usr/bin/$(RUBY_VERSION),' debian/oswitch/usr/bin/oswitch
+	echo "ruby:Versions=$(RUBY_VERSION)" >> debian/oswitch.substvars
+	echo "ruby:Interpreter=$(RUBY_VERSION)"  >> debian/oswitch.substvars
