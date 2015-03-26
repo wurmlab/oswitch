@@ -11,5 +11,17 @@
 # If you need to specify the .gemspec (eg there is more than one)
 #export DH_RUBY_GEMSPEC=gem.gemspec
 
+DH_RUBY_VERSION := $(shell dh_ruby --version | cut -b 17-)
+
 %:
 	dh $@ --buildsystem=ruby --with ruby
+
+override_dh_auto_install:
+	dh_auto_install
+	# Rewrite shebang line to `#!/usr/bin/ruby` instead of `#!/usr/bin/env ruby`.
+	# This ensures the package always will always use system Ruby regardless of
+	# the Ruby loaded in the env by rvm, rbenv, chruby, etc. This is the default
+	# behaviour in Jessie and Vivid, so the fix is meant only for Trusty.
+	if dpkg --compare-versions $(DH_RUBY_VERSION) lt 0.7.0; then      \
+		sed -i '1s,.*,#!/usr/bin/ruby,' debian/oswitch/usr/bin/oswitch; \
+	fi
