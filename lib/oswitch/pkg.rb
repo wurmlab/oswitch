@@ -1,3 +1,3 @@
 class OSwitch
-  PREFIX = File.expand_path('../..', File.basename(__FILE__))
+  PREFIX = File.expand_path('../..', File.dirname(__FILE__))
 end
