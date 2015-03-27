@@ -1,3 +1,9 @@
+oswitch (0.2.5-1) trusty; urgency=medium
+
+  * Upstream 0.2.5
+
+ -- Anurag Priyam <anurag08priyam@gmail.com>  Fri, 27 Mar 2015 06:10:20 +0000
+
 oswitch (0.2.3-1) UNRELEASED; urgency=medium
 
   * Setup things for deb packaging.
