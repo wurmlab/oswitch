@@ -20,7 +20,7 @@ DESC
   s.required_ruby_version =       '>= 2.0'
 
   # gem
-  s.files         = Dir['lib/**/*'] + Dir['context/**/*']
+  s.files         = Dir['lib/**/*'] + Dir['share/**/*']
   s.files         = s.files + ['Gemfile', 'oswitch.gemspec']
   s.files         = s.files + ['README.mkd']
   s.require_paths = ['lib']
