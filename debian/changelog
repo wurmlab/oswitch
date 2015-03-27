@@ -1,5 +1,5 @@
 oswitch (0.2.3-1) UNRELEASED; urgency=medium
 
-  * Initial release
+  * Setup things for deb packaging.
 
  -- Anurag Priyam <anurag08priyam@gmail.com>  Tue, 17 Mar 2015 07:41:55 +0000
