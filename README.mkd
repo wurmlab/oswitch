@@ -12,6 +12,7 @@ mymacbook:~/2015-02-01-myproject> oswitch -l
     ubuntu:14.04
     ontouchstart/texlive-full
     ipython/ipython
+    hlapp/rpopgen
 mymacbook:~/2015-02-01-myproject> oswitch biolinux
     ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
@@ -165,6 +166,7 @@ yeban/biolinux:8
 ubuntu:14.04
 ontouchstart/texlive-full
 ipython/ipython
+hlapp/rpopgen
 ```
 	
 ##### Availability
