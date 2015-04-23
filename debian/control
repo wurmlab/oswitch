@@ -3,7 +3,7 @@ Section: ruby
 Priority: optional
 Maintainer: Debian Ruby Extras Maintainers <pkg-ruby-extras-maintainers@lists.alioth.debian.org>
 Uploaders:  Anurag Priyam <anurag08priyam@gmail.com>
-Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.6.1~)
+Build-Depends: debhelper (>= 7.0.50~), gem2deb (>= 0.6.1~), ruby-ronn
 Standards-Version: 3.9.5
 Homepage: https://github.com/yeban/oswitch
 XS-Ruby-Versions: all

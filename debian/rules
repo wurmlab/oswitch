@@ -5,6 +5,10 @@ DH_RUBY_VERSION := $(shell dh_ruby --version | cut -b 17-)
 %:
 	dh $@ --buildsystem=ruby --with ruby
 
+override_dh_auto_build:
+	dh_auto_build
+	ronn -r debian/*.ronn
+
 override_dh_auto_install:
 	dh_auto_install
 	# Rewrite shebang line to `#!/usr/bin/ruby` instead of `#!/usr/bin/env ruby`.
@@ -14,3 +18,7 @@ override_dh_auto_install:
 	if dpkg --compare-versions $(DH_RUBY_VERSION) lt 0.7.0; then      \
 		sed -i '1s,.*,#!/usr/bin/ruby,' debian/oswitch/usr/bin/oswitch; \
 	fi
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm debian/*.1
