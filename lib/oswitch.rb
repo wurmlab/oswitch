@@ -71,6 +71,14 @@ class OSwitch
   # Linux specific code.
   module Linux
 
+    BLACKLIST =
+      %r{
+      ^/$|
+      ^/(bin|boot|dev|etc|home|lib|lib64|lost\+found|opt|proc|
+         run(?!/media)|sbin|srv|sys|tmp|usr|var|
+         initrd.img|initrd.img.old|vmlinuz|vmlinuz.old)
+      }x
+
     def uid
       Process.uid
     end
@@ -79,19 +87,17 @@ class OSwitch
       Process.gid
     end
 
-    # Parse /proc/mounts for mountpoints.
     def mountpoints
-      mtab = IO.readlines '/proc/mounts'
-      mountpoints = mtab.map{ |line| line.split(/\s+/)[1]}
-      mountpoints.map!{ |mount| unescape(mount) }
-      # Ignore common system mountpoints.
-      mountpoints.reject!{ |mount| mount =~ /^\/$/ }
-      mountpoints.reject!{ |mount| mount =~ /^\/(proc|sys|usr|boot|tmp|dev|var|bin|etc|lib).*/ }
-      # Mount /run/media/* but ignore other /run/ mountpoints.
-      mountpoints.reject!{ |mount| mount =~ /^\/run.*/ unless mount =~ /^\/run\/(media.*)/ }
+      volumes = IO.readlines('/proc/mounts')
+        .map { |line| line.split(/\s+/)[1] }
+        .map { |path| unescape(path)       }
+      volumes = volumes | Dir['/*']
 
-      # Add home dir.
-      mountpoints << home
+      volumes.reject! do |path|
+        (path =~ BLACKLIST) || !File.readable?(path)
+      end
+
+      volumes << home
     end
 
     private
