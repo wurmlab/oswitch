@@ -103,7 +103,11 @@ class OSwitch
     private
 
     def unescape(mount)
-      mount.gsub(/\\040/, " ").gsub(/\\012/, "\n").gsub(/\\134/, "\\").gsub(/\\011/, "\t")
+      mount
+        .gsub(/\\040/, " ")
+        .gsub(/\\012/, "\n")
+        .gsub(/\\134/, "\\")
+        .gsub(/\\011/, "\t")
     end
   end
 
