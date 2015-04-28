@@ -3,7 +3,10 @@ require 'colorize'
 require 'fileutils'
 require 'shellwords'
 
+require 'oswitch/exceptions'
+require 'oswitch/image'
 require 'oswitch/pkg'
+require 'oswitch/os'
 
 # OSwitch leverages docker to provide access to complex Bioinformatics software
 # (even Biolinux!) in just one command.
@@ -14,139 +17,7 @@ require 'oswitch/pkg'
 # Volumes from host OS are mounted in the container just the same, including
 # home directory. USER, HOME, SHELL, and PWD are preserved.
 class OSwitch
-
-  class ENOPKG < StandardError
-
-    def initialize(name)
-      @name = name
-    end
-
-    def to_s
-      "Recipe to run #@name not available."
-    end
-  end
-
-  class ENODKR < StandardError
-
-    def to_s
-      "***** Docker not installed / correctly setup / running.
-      Are you able to run 'docker info'?"
-    end
-  end
-
-  include Timeout
-
-  # Captures a docker image's metadata.
-  Image = Struct.new :repository, :tag, :id, :created, :size
-
-  class Image
-
-    # Model Image's eigenclass as a collection of Image objects.
-    class << self
-
-      include Enumerable
-
-      def all
-        `docker images`.split("\n").drop(1).
-          map{|l| Image.new(*l.split(/\s{2,}/))}
-      end
-
-      def each(&block)
-        all.each(&block)
-      end
-
-      def get(imgname)
-        repository, tag = imgname.split(':')
-        return if not repository or repository.empty?
-        tag = 'latest' if not tag or tag.empty?
-        find {|img| img.repository == repository and img.tag == tag}
-      end
-
-      def exists?(imgname)
-        !!get(imgname)
-      end
-    end
-  end
-
-  # Linux specific code.
-  module Linux
-
-    BLACKLIST =
-      %r{
-      ^/$|
-      ^/(bin|boot|dev|etc|home|lib|lib64|lost\+found|opt|proc|
-         run(?!/media)|sbin|srv|sys|tmp|usr|var|
-         initrd.img|initrd.img.old|vmlinuz|vmlinuz.old)
-      }x
-
-    def uid
-      Process.uid
-    end
-
-    def gid
-      Process.gid
-    end
-
-    def mountpoints
-      volumes = IO.readlines('/proc/mounts')
-        .map { |line| line.split(/\s+/)[1] }
-        .map { |path| unescape(path)       }
-      volumes = volumes | Dir['/*']
-
-      volumes.reject! do |path|
-        (path =~ BLACKLIST) || !File.readable?(path)
-      end
-
-      volumes << home
-    end
-
-    private
-
-    def unescape(mount)
-      mount
-        .gsub(/\\040/, " ")
-        .gsub(/\\012/, "\n")
-        .gsub(/\\134/, "\\")
-        .gsub(/\\011/, "\t")
-    end
-  end
-
-  # Mac OS X specific code.
-  module Darwin
-
-    BLACKLIST =
-      %r{
-      ^/$|
-      ^/(bin|cores|dev|etc|home|Incompatible\ Software|
-         installer\.failurerequests|lost\+found|net|
-         Network|opt|private|sbin|System|Users|tmp|
-         usr|var|Volumes$)
-      }x
-
-    def uid
-      `boot2docker ssh id -u`.chomp
-    end
-
-    def gid
-      `boot2docker ssh id -g`.chomp
-    end
-
-    def mountpoints
-      volumes = Dir['/Volumes/*'].map {|v| File.symlink?(v) ? File.readlink(v) : v}
-      volumes = volumes | Dir['/*']
-      volumes.reject! { |mount| mount =~ BLACKLIST }
-      volumes << home
-    end
-  end
-
-  # NOTE:
-  #   This won't work on JRuby, as it sets RUBY_PLATFORM to 'java'.
-  case RUBY_PLATFORM
-  when /linux/
-    include Linux
-  when /darwin/
-    include Darwin
-  end
+  include OS, Timeout
 
   DOTDIR = File.expand_path('~/.oswitch')
 
@@ -257,24 +128,6 @@ class OSwitch
   # Template files.
   def template_files
     Dir[File.join(template_dir, '*')]
-  end
-
-
-  ## Data required to switchify a container. ##
-  def username
-    ENV['USER']
-  end
-
-  def home
-    ENV['HOME']
-  end
-
-  def shell
-    File.basename ENV['SHELL']
-  end
-
-  def cwd
-    Dir.pwd
   end
 
   def motd
