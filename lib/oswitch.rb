@@ -147,7 +147,7 @@ safest to write to.
 Press Ctrl-D or type 'exit' to go back.
 ################################################################################
 MOTD
-    str.blue.shellescape
+    str.shellescape
   end
 
   def mountargs

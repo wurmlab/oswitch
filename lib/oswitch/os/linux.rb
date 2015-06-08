@@ -25,7 +25,7 @@ class OSwitch
         volumes = volumes | Dir['/*']
 
         volumes.reject! do |path|
-          (path =~ BLACKLIST) || !File.readable?(path)
+          (path =~ BLACKLIST) || !File.readable?(path) || !File.directory?(path)
         end
 
         volumes << home
