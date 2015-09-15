@@ -72,7 +72,8 @@ class OSwitch
 
   def build
     return true if Image.exists? imgname
-    write_context && system("docker build -t #{imgname} #{context_dir}")
+    create_context_dir &&
+      system("docker build -t #{imgname} #{context_dir}") || !remove_context_dir
   end
 
   # Ping docker daemon. Raise error if no response within 10s.
@@ -85,16 +86,16 @@ class OSwitch
 
   ## Code to generate context dir that will be built into a docker image. ##
 
-  # Write data to context dir.
-  def write_context
-    create_context_dir
-    write_dockerfile
-  end
-
   # Create context dir.
   def create_context_dir
     FileUtils.mkdir_p context_dir
     FileUtils.cp_r(template_files, context_dir)
+    write_dockerfile
+  end
+
+  # Remove context dir.
+  def remove_context_dir
+    FileUtils.rm_r(context_dir)
   end
 
   # Write Dockerfile.
