@@ -193,13 +193,33 @@ OSwitch first requires a [working docker install](#Install and setup docker).
 
 ##### Mac
 
+Using [homebrew](http://brew.sh/).
+
     $ brew install https://raw.githubusercontent.com/yeban/oswitch/master/homebrew/oswitch.rb
 
+Depending on whether Homebrew is installed systemwide or only for your user,
+this will install `oswitch` systemwide or only for your user.
+
 ##### Linux
+
+###### Debian / Ubuntu
+
+A `deb` package of `oswitch` is available in BioLinux repository for Trusty,
+Vivid and Jessie.
+
+    $ sudo add-apt-repository ppa:nebc/biolinux
+    $ sudo apt-get update
+    $ sudo apt-get install oswitch
+
+###### Others
 
 Requirements: Ruby 2.0 or higher.
 
     $ gem install oswitch
+
+Depending on whether Ruby is installed systemwide (via your package-manager) or
+only for your user, this will install `oswitch` systemwide or only for your
+user.
 
 #### Test oswitch
 
