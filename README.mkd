@@ -207,7 +207,7 @@ this will install `oswitch` systemwide or only for your user.
 A `deb` package of `oswitch` is available in BioLinux repository for Trusty,
 Vivid and Jessie.
 
-    $ sudo add-apt-repository ppa:nebc/biolinux
+    $ sudo add-apt-repository ppa:nebc/bio-linux
     $ sudo apt-get update
     $ sudo apt-get install oswitch
 
