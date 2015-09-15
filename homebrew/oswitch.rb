@@ -7,7 +7,7 @@ class Oswitch < Formula
 
   homepage 'https://github.com/yeban/oswitch'
 
-  url  'https://github.com/yeban/oswitch/archive/v0.2.3.tar.gz'
+  url  'https://github.com/yeban/oswitch/archive/v0.2.6.tar.gz'
   sha1 '87d4c9680c40eab6a503d24b7b09e7b069be7c67'
 
   depends_on 'ruby'

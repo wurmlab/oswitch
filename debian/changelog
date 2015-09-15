@@ -1,3 +1,9 @@
+oswitch (0.2.6) trusty; urgency=medium
+
+  * Upstream 0.2.6
+
+ -- Anurag Priyam <anurag08priyam@gmail.com>  Tue, 15 Sep 2015 15:38:43 +0100
+
 oswitch (0.2.5-1) trusty; urgency=medium
 
   * Upstream 0.2.5
