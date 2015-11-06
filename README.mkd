@@ -316,6 +316,9 @@ We create a new image on the fly that inherits from the given image. While creat
 the new image we execute a shell script that installs packages required for
 oswitch to work and creates a user in the image (almost) identical to that on the host.
 
+##### Q. How can I connect to an existing container?
+In another shell, use `docker ps` to see which containers are already running. Copy the identifier from the `CONTAINER ID` (column this looks something like `37e4e6ada6a4`), and use it to run `docker attach 37e4e6ada6a4` (replace with your container's id). This will create a new ssh connection to your existing container.
+
 ## Roadmap
 
 1. ~~make it possible to use docker containers without inheriting our
