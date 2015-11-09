@@ -5,7 +5,7 @@ Isolated software setups for Bioinformatics analyses.
 Mini-example:
 
 ```bash
-mymacbook:~/2015-02-01-myproject> abyss-pe
+mymacbook:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
     zsh: command not found: abyss-pe
 mymacbook:~/2015-02-01-myproject> oswitch -l
     yeban/biolinux:8
@@ -24,10 +24,9 @@ mymacbook:~/2015-02-01-myproject>
 
 Detailed information:
 * [Introduction](#introduction)
-* [Usage](#example-usage)
+* [Usage](#usage)
 * [Installation](#installation)
 * [FAQ](#faq)
-* [Roadmap](#roadmap)
 * [Contributors & Funding](#contributors-&-funding)
 
 ## Introduction
@@ -65,25 +64,12 @@ oswitch does this by keeping the following inside a container:
 NAS, USB) mounted on the host are available in the container at the same
 path.
 
-## Example Usage
+## Usage
 
 There are two broad usage scenarios: interactive use & non-interactive
 use.
 
 ##### Use a package interactively in a normal command-line
-
-Minimalist example:
-
-```shell
-Yannick@n56-169 ~/myproject> uname -a
-Darwin n56-169.sbcs.qmul.ac.uk 14.0.0 Darwin Kernel Version 14.0.0: Fri Sep 19 00:26:44 PDT 2014; root:xnu-2782.1.97~2/RELEASE_X86_64 x86_64
-Yannick@n56-169 ~/myproject> oswitch yeban/biolinux
-### You are now running: biolinux_8, in container: biolinux_8-27182. ###
-Yannick@biolinux_8-27182 ~/myproject> uname -a
-Linux biolinux_8-27182 3.16.4-tinycore64 #1 SMP Thu Oct 23 16:14:24 UTC 2014 x86_64 x86_64 x86_64 GNU/Linux
-```
-
-Biologically relevant example:
 
 ```shell
 # Trying to run blast.
@@ -121,7 +107,7 @@ myfavoritegene	gi|328778864|ref|XP_397465.4|	80.60	201	36	2	1	199	95	294	5e-108	
 
 # [... potentially run other analyses that require biolinux things...]
 
-# Return to normal operating system
+# Exit the virtual environment.
 biolinux-7187:~/test/ $ exit
 pixel:~/test/ $ ls 
 mygene.fasta mygene_blastp_nr.txt
@@ -143,7 +129,7 @@ the exit status of the command run within container is returned.
 pixel:~/test/ $ oswitch yeban/biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
 ```
 
-##### Listing available operating system containers
+##### Listing available virtual environments
 
 oswitch can pull any image from docker hub. You can see the images you pulled
 from docker hub using oswitch as:
@@ -170,7 +156,8 @@ We have tested oswitch on:
 * Some features work only for Debian, Ubuntu, CentOS based docker images.
 * Host directories/volumes with paths conflicting with container paths are
   skipped.
-* SELinux must be disabled on CentOS for mounting volumes to work.
+* SELinux must be disabled on CentOS for mounting volumes to work (check the
+  SELinux documentation to see the implications of doing this).
 * [Volume mounting on Mac OS hosts is imperfect](#q-directories-mounted-within-container-on-mac-host-are-empty).
 
 ## Installation
@@ -222,16 +209,12 @@ user.
 
 ##### Mac
 
-Install with the Docker Toolbox -
-https://www.docker.com/docker-toolbox
+Install with the Docker Toolbox - https://www.docker.com/docker-toolbox.
 
-Add the following to your `.bashrc` or `.zshrc` to use docker from your
-standard shell:
+Then add the following to your `.bashrc` or `.zshrc`:
 
 ```
-export DOCKER_HOST=tcp://192.168.99.100:2376
-export DOCKER_CERT_PATH=/Users/<your user name here>/.docker/machine/machines/default
-export DOCKER_TLS_VERIFY=1
+eval "$(docker-machine env default)"
 ```
 
 ##### Ubuntu
@@ -336,25 +319,6 @@ In another shell, use `docker ps` to see which containers are already running. C
 * [Saurabh Kumar](https://github.com/sa1)
 * Richard Nichols - [http://www.sbcs.qmul.ac.uk/staff/richardnichols.html](http://www.sbcs.qmul.ac.uk/staff/richardnichols.html) | [@qmwugbt112](//twitter.com/qmwugbt112)
 * Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) | [@yannick__](//twitter.com/yannick__)
-
-## History
-
-This project grew from our own need to rapidly access diverse pieces of
-specific versions of software including those distributed as part of
-[BioLinux](http://environmentalomics.org/bio-linux/) on our MacBooks and our
-university HPC system. This was previously too difficult, but is important for
-[reproducible research](http://www.software.ac.uk) and agility.  @bmpvieira
-made it clear early on that the [docker](http://docker.io/) could help make
-something happen.  We first shared the resulting concept during a [Balti &
-Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
-presentation in the form of this (now out of date!) slide:
-
-[![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
-
-Docker images feel similar to using virtual machine images - but are much more
-[flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
-They are thus easily [shared or published](https://hub.docker.com/). We are extremely lucky to
-be able to build upon this amazing technology.
 
 ---
 
