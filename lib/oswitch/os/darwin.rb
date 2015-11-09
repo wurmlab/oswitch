@@ -20,11 +20,11 @@ class OSwitch
 
       if OS.command?('docker-machine')
         def uid
-          `docker-machine ssh default id -u`.chomp
+          OS.outputof('docker-machine ssh default id -u')
         end
 
         def gid
-          `docker-machine ssh default id -g`.chomp
+          OS.outputof('docker-machine ssh default id -g')
         end
       else
         puts <<WARN
@@ -32,11 +32,11 @@ class OSwitch
 via the Docker Toolbox (https://docker.com/toolbox).
 WARN
         def uid
-          `boot2docker ssh id -u`.chomp
+          OS.outputof('boot2docker ssh id -u')
         end
 
         def gid
-          `boot2docker ssh id -g`.chomp
+          OS.outputof('boot2docker ssh id -g')
         end
       end
     end

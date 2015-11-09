@@ -1,3 +1,5 @@
+require 'English'
+
 class OSwitch
   # Get OS specific info. Like, what directories to mount in the container,
   # current user, home directory, etc.
@@ -8,6 +10,12 @@ class OSwitch
     # Return `true` if the given command exists and is executable.
     def self.command?(command)
       system("which #{command} > /dev/null 2>&1")
+    end
+
+    def self.outputof(command)
+      output = `#{command} 2> /dev/null`.chomp
+      raise unless $CHILD_STATUS.success?
+      output
     end
 
     def username
