@@ -23,7 +23,7 @@ mymacbook:~/2015-02-01-myproject>
 ```
 
 Detailed information:
-* [Features](#features)
+* [Introduction](#introduction)
 * [Usage](#example-usage)
 * [Installation](#installation)
 * [FAQ](#faq)
@@ -175,7 +175,7 @@ We have tested oswitch on:
 
 ## Installation
 
-oswitch first requires a [working docker install](#Install and setup docker).
+oswitch first requires a [working docker install](#install-and-setup-docker).
 
 #### Install oswitch
 
@@ -217,7 +217,8 @@ user.
 
 ##### Mac OS X
 
-Installing docker is much easier than before - https://docs.docker.com/installation/mac/
+Installing docker is much easier than before -
+https://www.docker.com/docker-toolbox
 
 ##### Ubuntu
 
