@@ -190,7 +190,7 @@ this will install `oswitch` systemwide or only for your user.
 
 If you don't have homebrew, you can install oswitch using [RubyGems](#others).
 
-##### Debian / Ubuntu
+##### Ubuntu
 
 A `deb` package of `oswitch` is available in BioLinux repository for Trusty,
 Vivid and Jessie.
@@ -218,10 +218,21 @@ user.
 
 ## Install and setup docker
 
-##### Mac OS X
+#### Install docker
 
-Installing docker is much easier than before -
+##### Mac
+
+Install with the Docker Toolbox -
 https://www.docker.com/docker-toolbox
+
+Add the following to your `.bashrc` or `.zshrc` to use docker from your
+standard shell:
+
+```
+export DOCKER_HOST=tcp://192.168.99.100:2376
+export DOCKER_CERT_PATH=/Users/<your user name here>/.docker/machine/machines/default
+export DOCKER_TLS_VERIFY=1
+```
 
 ##### Ubuntu
 
