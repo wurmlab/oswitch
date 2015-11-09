@@ -47,6 +47,13 @@ if options[:list]
   exit
 end
 
-package = ARGV[0]
-command = ARGV[1..-1]
-OSwitch.to(package, command)
+pattern = ARGV[0].strip
+command = ARGV[1..-1].join(' ')
+matches = OSwitch.packages.grep(/#{pattern}/)
+
+if matches.length > 1
+  puts "Which one of the following did you mean?"
+  puts matches.join(', ')
+else
+  OSwitch.to(matches.first ||  pattern, command)
+end

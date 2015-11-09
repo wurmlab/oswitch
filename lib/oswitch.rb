@@ -40,8 +40,8 @@ class OSwitch
   end
 
   def initialize(package, command = [])
-    @package = package.strip
-    @command = command.join(' ')
+    @package = package
+    @command = command
     @imgname = "oswitch_#{@package}"
     @cntname = "#{@package.gsub(%r{/|:}, '_')}-#{Process.pid}"
     exec
