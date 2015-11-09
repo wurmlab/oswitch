@@ -51,7 +51,7 @@ class OSwitch
 
   def exec
     ping and build and switch
-  rescue ENODKR, ENOPKG => e
+  rescue ENODKR => e
     puts e
     exit
   rescue => e
