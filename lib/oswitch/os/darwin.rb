@@ -27,11 +27,11 @@ class OSwitch
           OS.outputof('docker-machine ssh default id -g')
         end
       else
+        def uid
         puts <<WARN
 'boot2docker' has been deprecated in favour of 'docker-machine'. Please upgrade
 via the Docker Toolbox (https://docker.com/toolbox).
 WARN
-        def uid
           OS.outputof('boot2docker ssh id -u')
         end
 
