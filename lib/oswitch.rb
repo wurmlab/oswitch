@@ -57,8 +57,8 @@ class OSwitch
   rescue => e
     puts <<MSG
 
-Ouch! Looks like you have hit a bug. Please could you report the below to our
-issue tracker (https://github.com/wurmlab/oswitch/issues):
+Ouch! Looks like you have hit a bug. Please could you post the error report
+below to our issue tracker (https://github.com/wurmlab/oswitch/issues):
 
 #{e}\n#{e.backtrace.join("\n")}
 
