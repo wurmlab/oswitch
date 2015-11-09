@@ -1,6 +1,6 @@
-# OSwitch
+# oswitch
 
-One-line access to other operating systems.
+Isolated software setups for Bioinformatics analyses.
 
 Mini-example:
 
@@ -30,42 +30,30 @@ Detailed information:
 * [Roadmap](#roadmap)
 * [Contributors & Funding](#contributors-&-funding)
 
-## Background
+## Introduction
 
-Genomic analyses require jumping back and forth between many bioinformatics tools.
-The data types are young, thus so are the tools. This leads to frequent
-updates of tools that are often challenging to install. Furthermore, it is
-challenging to keep different versions of software for different projects, yet
-changing versions can make analyses difficult to reproduce. To make matters worse,
-genomicists often lack the skills necessary to setup complex bioinformatics software,
-and systems administrators can be overwhelmed by large numbers of software
-installation requests.
+Bioinformatics analyses require jumping back and forth between many software
+tools. The data types are young and so are the tools. This leads to frequent
+updates of the tools, and yet changing versions can make analyses difficult to
+reproduce. To make matters worse, Biologists often lack the skills necessary to
+setup complex Bioinformatics software,  and system administrators can be
+overwhelmed by a large number of requests.
 
-## Aim
+[Docker](http://docker.io/) is an emerging technology that provides a means to
+create and share isolated and reproducible computing environments called
+"containers" that are similar to a virtual-machine but much more [flexible and
+light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
+Several Bioinformatics software have been "containerised" with docker and are
+thus installable on personal computers or compute clusters with a single
+command in a reproducible manner.
 
-We are developing `oswitch` to enable **seamless switching
-from one operating system to another** - providing access to diverse
-ranges of tools. This project grew from our own need to rapidly access 
-diverse pieces of specific versions of software including those distributed as part of
-[BioLinux](http://environmentalomics.org/bio-linux/) on our MacBooks
-and our university HPC system. This was previously too difficult, but is
-important for [reproducible research](http://www.software.ac.uk) and agility.
-@bmpvieira made it clear early on that the [docker](http://docker.io/) could
-help make something happen. We first shared the resulting concept during a
-[Balti & Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
-presentation in the form of this (now out of date!) slide:
+oswitch uses docker containers to provide isolated software setups while making
+data on the local file system accessible within containers. Thus while docker
+expects users to move their data to containers, oswitch brings the containers
+to local data. oswitch thus provides a "virtual environment" around your data
+to work with a range of Bioinformatics tools, and different versions of them.
 
-[![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
-
-Docker images feel similar to using virtual machine images - but are much more
-[flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
-They are thus easily [shared or published](https://hub.docker.com/). We are extremely lucky to
-be able to build upon this amazing technology.
-
-## Features
-
-**`oswitch` is a wrapper facilitating access to docker images**. Importantly, when switching
-operating systems inside a shell, most things remain unchanged:
+oswitch does this by keeping the following inside a container:
 
 * Current working directory is maintained
 * User name, uid and gid are maintained
@@ -157,7 +145,7 @@ pixel:~/test/ $ oswitch yeban/biolinux blastp -remote -query mygene.fa -db nr > 
 
 ##### Listing available operating system containers
 
-OSwitch can pull any image from docker hub. You can see the images you pulled
+oswitch can pull any image from docker hub. You can see the images you pulled
 from docker hub using oswitch as:
 
 ```shell
@@ -171,9 +159,9 @@ hlapp/rpopgen
 	
 ##### Availability
 
-We have tested OSwitch on:
+We have tested oswitch on:
 
-* Mac OS X Yosemite
+* Mac OS X Yosemite, El Captain
 * Ubuntu 14.04.1
 * CentOS 7
 
@@ -187,7 +175,7 @@ We have tested OSwitch on:
 
 ## Installation
 
-OSwitch first requires a [working docker install](#Install and setup docker). 
+oswitch first requires a [working docker install](#Install and setup docker).
 
 #### Install oswitch
 
@@ -319,20 +307,6 @@ oswitch to work and creates a user in the image (almost) identical to that on th
 ##### Q. How can I connect to an existing container?
 In another shell, use `docker ps` to see which containers are already running. Copy the identifier from the `CONTAINER ID` (column this looks something like `37e4e6ada6a4`), and use it to run `docker attach 37e4e6ada6a4` (replace with your container's id). This will create a new ssh connection to your existing container.
 
-## Roadmap
-
-1. ~~make it possible to use docker containers without inheriting our
-current baseimage~~
-2. ~~gem distribution for easier installation~~
-3. ~~brew recipe for Mac~~
-4. ~~deb package~~
-5. test on QMUL's compute cluster
-6. make available images for common bioinformatics software
-7. deploy at [RAL/JASMIN](http://www.jasmin.ac.uk)
-8. create an SELinux policy to run oswitch on CentOS without having to disable
-SELinux entirely
-9. rpm package
-
 ## Contribute
 
     $ git clone https://github.com/yeban/oswitch
@@ -347,6 +321,25 @@ SELinux entirely
 * [Saurabh Kumar](https://github.com/sa1)
 * Richard Nichols - [http://www.sbcs.qmul.ac.uk/staff/richardnichols.html](http://www.sbcs.qmul.ac.uk/staff/richardnichols.html) | [@qmwugbt112](//twitter.com/qmwugbt112)
 * Yannick Wurm  - [http://wurmlab.github.io](http://wurmlab.github.io) | [@yannick__](//twitter.com/yannick__)
+
+## History
+
+This project grew from our own need to rapidly access diverse pieces of
+specific versions of software including those distributed as part of
+[BioLinux](http://environmentalomics.org/bio-linux/) on our MacBooks and our
+university HPC system. This was previously too difficult, but is important for
+[reproducible research](http://www.software.ac.uk) and agility.  @bmpvieira
+made it clear early on that the [docker](http://docker.io/) could help make
+something happen.  We first shared the resulting concept during a [Balti &
+Bioinformatics](http://nickloman.github.io/balti/2014/05/01/balti-and-bioinformatics-27th-may-2014/)
+presentation in the form of this (now out of date!) slide:
+
+[![Slide from Balti](http://i.imgur.com/exfDi6a.png)](http://www.slideshare.net/yannickwurm/2014-0527-opinion-computing-for-genomics-sucks)
+
+Docker images feel similar to using virtual machine images - but are much more
+[flexible and light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
+They are thus easily [shared or published](https://hub.docker.com/). We are extremely lucky to
+be able to build upon this amazing technology.
 
 ---
 
