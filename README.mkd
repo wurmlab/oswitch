@@ -13,6 +13,7 @@ mymacbook:~/2015-02-01-myproject> oswitch -l
     ontouchstart/texlive-full
     ipython/ipython
     hlapp/rpopgen
+    bioconductor/release_sequencing
 mymacbook:~/2015-02-01-myproject> oswitch biolinux
     ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
