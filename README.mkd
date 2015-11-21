@@ -171,7 +171,10 @@ oswitch first requires a [working docker install](#install-and-setup-docker).
 
 Using [homebrew](http://brew.sh/):
 
-    $ brew install https://raw.githubusercontent.com/yeban/oswitch/master/homebrew/oswitch.rb
+oswitch can be installed from homebrew-science
+
+    brew tap homebrew/science
+    brew install oswitch
 
 Depending on whether homebrew is installed systemwide or only for your user,
 this will install `oswitch` systemwide or only for your user.
