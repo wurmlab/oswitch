@@ -1,12 +1,13 @@
-# oswitch
+# oswitch - virtual environments for flexible and reproducible bioinformatics analyses
 
-Isolated software setups for Bioinformatics analyses.
-
-Mini-example:
+More and more bioinformatics software are being "containerised" with [docker](http://docker.io/), making them installable on personal computers and compute clusters alike with a single command in a reproducible manner. However, using containerised software can still be a challenge as the containers are effectively a different operating system altogether.
+oswitch enhances usability of docker containers by a) automatically making available the local file-system and user profile inside the container, b) using the host user's login shell and current working directory as the entry point. The net effect is similar to entering "virtual environment" on the host system containing specific versions of software of interest.
 
 ```bash
 mymacbook:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
     zsh: command not found: abyss-pe
+
+# List available images.
 mymacbook:~/2015-02-01-myproject> oswitch -l
     yeban/biolinux:8
     ubuntu:14.04
@@ -14,6 +15,8 @@ mymacbook:~/2015-02-01-myproject> oswitch -l
     ipython/ipython
     hlapp/rpopgen
     bioconductor/release_sequencing
+
+# Enter the continaer and run commands interactively.
 mymacbook:~/2015-02-01-myproject> oswitch biolinux
     ###### You are now running: biolinux in container biolinux-7187. ######
 biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
@@ -21,247 +24,48 @@ biolinux-7187:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
 biolinux-7187:~/2015-02-01-myproject> exit
 mymacbook:~/2015-02-01-myproject>
     [... output is where you expect it to be ...]
-```
-
-Detailed information:
-* [Introduction](#introduction)
-* [Usage](#usage)
-* [Installation](#installation)
-* [FAQ](#faq)
-* [Contributors & Funding](#contributors-&-funding)
-
-## Introduction
-
-Bioinformatics analyses require jumping back and forth between many software
-tools. The data types are young and so are the tools. This leads to frequent
-updates of the tools, and yet changing versions can make analyses difficult to
-reproduce. To make matters worse, Biologists often lack the skills necessary to
-setup complex Bioinformatics software,  and system administrators can be
-overwhelmed by a large number of requests.
-
-[Docker](http://docker.io/) is an emerging technology that provides a means to
-create and share isolated and reproducible computing environments called
-"containers" that are similar to a virtual-machine but much more [flexible and
-light-weight](http://stackoverflow.com/questions/16047306/how-is-docker-io-different-from-a-normal-virtual-machine).
-Several Bioinformatics software have been "containerised" with docker and are
-thus installable on personal computers or compute clusters with a single
-command in a reproducible manner.
-
-oswitch uses docker containers to provide isolated software setups while making
-data on the local file system accessible within containers. Thus while docker
-expects users to move their data to containers, oswitch brings the containers
-to local data. oswitch thus provides a "virtual environment" around your data
-to work with a range of Bioinformatics tools, and different versions of them.
-
-oswitch does this by keeping the following inside a container:
-
-* Current working directory is maintained
-* User name, uid and gid are maintained
-* Login shell (bash/zsh/fish) is maintained
-* Home directory is maintained (thus all .dotfiles and config files
-  are maintained).
-* read/write permissions are maintained
-* Paths are maintained whenever possible. Thus volumes (external drives,
-NAS, USB) mounted on the host are available in the container at the same
-path.
-
-## Usage
-
-There are two broad usage scenarios: interactive use & non-interactive
-use.
-
-##### Use a package interactively in a normal command-line
-
-```shell
-# Trying to run blast.
-pixel:~/test/ $ ls 
-mygene.fasta
-pixel:~/test/ $ cat mygene.fa
->myfavoritegene isthisone
-MNTLWLSLWDYPGKLPLNFMVFDTKDDLQAAYWRDPYSIPLAVIFEDPQPISQRLIYEIR
-TNPSYTLPPPPTKLYSAPISCRKNKTGHWMDDILSIKTGESCPVNNYLHSGFLALQMITD
-ITKIKLENSDVTIPDIKLIMFPKEPYTADWMLAFRVVIPLYMVLALSQFITYLLILIVGE
-KENKIKEGMKMMGLNDSVF
-pixel:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 > mygene_blastp_nr.tab
-zsh: command not found: blastp
-# Indeed... blastp is missing from my MacBook. 
-
-# Switch to BioLinux and run blastp.
-pixel:~/test/ $ oswitch yeban/biolinux
-###### You are now running: biolinux in container biolinux-7187. ######
-biolinux-7187:~/test/ $ blastp -query mygene.fa -remote -db nr -outfmt 7 >  mygene_blastp_nr.tab
-# BioLinux includes blastp, thus the command ran smoothly.
-
-# View the result.
-biolinux-7187:~/test/ $ head mygene_blastp_nr.tab
-# BLASTP 2.2.28+
-# Query: myfavoritegene isthisone
-# RID: BJAHAHU9015
-# Database: nr
-# Fields: query id, subject id, % identity, alignment length, mismatches, gap opens, q. start, q. end, s. start, s. end, evalue, bit score
-# 501 hits found
-myfavoritegene	gi|322796550|gb|EFZ19024.1|	100.00	199	0	0	1	199	1	199	2e-142	 407
-myfavoritegene	gi|307183032|gb|EFN69988.1|	86.07	201	25	2	1	199	80	279	6e-115	 361
-myfavoritegene	gi|572260155|ref|XP_006608402.1|	80.60	201	36	2	1	199	95	294	4e-108	 350
-myfavoritegene	gi|328778864|ref|XP_397465.4|	80.60	201	36	2	1	199	95	294	5e-108	 350
 
 
-# [... potentially run other analyses that require biolinux things...]
-
-# Exit the virtual environment.
-biolinux-7187:~/test/ $ exit
-pixel:~/test/ $ ls 
-mygene.fasta mygene_blastp_nr.txt
-# our newly generated file is where we'd expect it to be.
-```
-
-##### Use a package non-interactively
-
-Alternatively, single commands can be run directly in a container
-(e.g. BioLinux) without entering it interactively. This can
-be useful to test new tools, or to run a single piece of
-not-locally-installed software as part of a single command. The
-container terminates automatically once the command has been
-executed, output is printed to the terminal and can be redirected, and
-the exit status of the command run within container is returned.
-
-```shell
-# Run command directly in BioLinux and view results if success.
+# Use a container non-interactively.
 pixel:~/test/ $ oswitch yeban/biolinux blastp -remote -query mygene.fa -db nr > mygene_blastp_nr.txt
 ```
 
-##### Listing available virtual environments
-
-oswitch can pull any image from docker hub. You can see the images you pulled
-from docker hub using oswitch as:
-
-```shell
-pixel:~ $ oswitch -l
-yeban/biolinux:8
-ubuntu:14.04
-ontouchstart/texlive-full
-ipython/ipython
-hlapp/rpopgen
-```
-	
-##### Availability
-
-We have tested oswitch on:
-
-* Mac OS X Yosemite, El Captain
-* Ubuntu 14.04.1
-* CentOS 7
-
-##### Caveats
-
-* Some features work only for Debian, Ubuntu, CentOS based docker images.
-* Host directories/volumes with paths conflicting with container paths are
-  skipped.
-* SELinux must be disabled on CentOS for mounting volumes to work (check the
-  SELinux documentation to see the implications of doing this).
-* [Volume mounting on Mac OS hosts is imperfect](#q-directories-mounted-within-container-on-mac-host-are-empty).
-
 ## Installation
 
-oswitch first requires a [working docker install](#install-and-setup-docker).
+oswitch first requires a [working docker install](https://github.com/wurmlab/Dockerfiles).
 
-#### Install oswitch
-
-##### Mac
-
-Using [homebrew](http://brew.sh/):
-
-oswitch can be installed from homebrew-science
-
-    brew tap homebrew/science
-    brew install oswitch
-
-Depending on whether homebrew is installed systemwide or only for your user,
-this will install `oswitch` systemwide or only for your user.
-
-If you don't have homebrew, you can install oswitch using [RubyGems](#others).
-
-##### Ubuntu
-
+#### On Ubuntu
 A `deb` package of `oswitch` is available in BioLinux repository for Trusty,
-Vivid and Jessie.
+Vivid and Jessie. This will install oswitch systemwide:
 
     $ sudo add-apt-repository ppa:nebc/bio-linux
     $ sudo apt-get update
     $ sudo apt-get install oswitch
 
-This will install oswitch systemwide. gem install (below) provides a way to
-install oswitch for your user only.
+#### Using [homebrew](http://brew.sh/) (on Mac)
+Depending on whether homebrew is installed systemwide or only for your user,
+this will install oswitch systemwide or only for your user:
 
-##### Others
+    brew tap homebrew/science
+    brew install oswitch
 
-Requirements: Ruby 2.0 or higher.
+#### Using RubyGems (on Linux & Mac)
 
-    $ gem install oswitch
+Requirements: Ruby 2.0 or higher (available by default on Mac and through
+package managers on Linux). This will install oswitch systemwide:
 
-Depending on whether Ruby is installed systemwide (via your package-manager) or
-only for your user, this will install `oswitch` systemwide or only for your
-user.
+    $ sudo gem install oswitch
 
-#### Test oswitch
+## Usage note
 
-    $ oswitch ubuntu:14.04
-
-## Install and setup docker
-
-#### Install docker
-
-##### Mac
-
-Install with the Docker Toolbox - https://www.docker.com/docker-toolbox.
-
-Then add the following to your `.bashrc` or `.zshrc`:
-
-```
-eval "$(docker-machine env default)"
-```
-
-##### Ubuntu
-
-Installing docker - https://docs.docker.com/installation/ubuntulinux/
-
-Add yourself to docker group so you can run docker client without sudo:
-
-```shell
-    $ sudo usermod -aG docker `whoami`
-    
-    # then logout and login again for the above command to take effect
-```
-	
-##### CentOS
-
-Installing docker - https://docs.docker.com/installation/centos/
-
-Add yourself to docker group so you can run docker client without sudo:
-
-```shell
-    $ sudo usermod -aG docker `whoami`
-    
-    # then logout and login again for the above command to take effect
-```
-	
-Disable SELinux as it gets in the way of mounting volumes within the container:
-
-```shell
-    $ sed -i .bak 's/SELINUX=enforcing/SELINUX=disabled/' /etc/selinux/config
-
-    # then reboot your system
-```
-	
-The above command backs up the original file to `/etc/selinux/config.bak`. If
-you are concerned about disabling SELinux, do note that we are trying to work
-out a better solution.
-
-#### Test that docker is correctly installed
-
-The following should give an encouraging message: 
-
-    $ docker run hello-world
+* [Volume mounting on Mac OS hosts is imperfect](#q-directories-mounted-within-container-on-mac-host-are-empty).
+* SELinux must be disabled on CentOS hosts for mounting volumes to work (check
+  the SELinux documentation to see the implications of doing this).
+* We have tested oswitch on Debian, Ubuntu, CentOS based docker images on the
+  following hosts:
+  * Mac OS X Yosemite, El Captain
+  * Ubuntu 14.04.1
+  * CentOS 7
 
 ## FAQ
 
