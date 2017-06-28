@@ -1,7 +1,19 @@
 ## oswitch - virtual environments for flexible and reproducible bioinformatics analyses
 
 More and more bioinformatics software are being "containerised" with [docker](http://docker.io/), making them installable on personal computers and compute clusters alike with a single command in a reproducible manner. However, using containerised software can still be a challenge as the containers are effectively a different operating system altogether.
-oswitch enhances usability of docker containers by a) automatically making available the local file-system and user profile inside the container, b) using the host user's login shell and current working directory as the entry point. The net effect is similar to entering "virtual environment" on the host system containing specific versions of software of interest.
+oswitch enhances usability of docker containers by:
+
+1. Making available the local file-system inside the container.
+2. Ensuring you are the same user inside the container as you
+   are on the host.
+3. Running your login shell, including sourcing your config
+   files when the container is booted.
+4. Switching to the directory that you were in on the host
+   when invoking oswitch.
+
+The net effect is similar to entering "virtual environment"
+on the host system containing specific versions of software
+of interest.
 
 ```bash
 mymacbook:~/2015-02-01-myproject> abyss-pe k=25 reads.fastq.gz
