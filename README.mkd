@@ -96,27 +96,20 @@ Currently this installs version 0.2.6 of oswitch.
 ### FAQ
 
 ##### Q. Directories mounted within container on Mac host are empty.
-The problem is, on Mac `boot2docker` is the _real_ host, not OS X. `oswitch`
-can mount only what's available to it from `boot2docker`. For example,
-`/Applications`.
-
-Run `boot2docker ssh ls /Applications` and you will find it empty as well.
-
-The workaround is to correctly mount the directories you want in `boot2docker`
-first.
+The problem is, on Mac `docker-machine` is the _real_ host, not OS X. `oswitch` can mount only what's available to it from `docker-machine`. Consider `/Applications` directory as an example. Run `docker-machine ssh default ls /Applications` and you will find it empty as well. The workaround is to correctly mount the directories you want inside `docker-machine` first:
 
 ```
-boot2docker down
-VBoxManage sharedfolder remove boot2docker-vm --name Applications
-VBoxManage sharedfolder add boot2docker-vm --name Applications --hostpath /Applications
-boot2docker up
-boot2docker ssh "sudo mkdir -p /Applications && sudo mount -t vboxsf -o uid=1000,gid=50 Applications /Applications"
+docker-machine stop default
+VBoxManage sharedfolder remove default --name Applications
+VBoxManage sharedfolder add default --name Applications --hostpath /Applications --automount
+docker-machine start default
+docker-machine ssh default "sudo mkdir -p /Applications && sudo mount -t vboxsf -o uid=1000,gid=50 Applications /Applications"
 ```
 
 ##### Q. cwd is empty in the container
 This means the said directory was not mounted by oswitch, or was incorrectly
 mounted. On Linux host, directories that can conflict with paths within
-container are not mounted. On Mac, `boot2docker` can get in the way.
+container are not mounted. On Mac, `docker-machine` can get in the way.
 
 Please [report](https://github.com/yeban/oswitch/issues/new) this on our [issue
 tracker](https://github.com/yeban/oswitch/issues). To help us debug, please
